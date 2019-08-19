@@ -37,9 +37,8 @@ public class ArrayStorage {
     void delete(String uuid) {
         Resume deleteResume = get(uuid);
         if (deleteResume != null) {
-            for (int i = positionOfResumeInStorage; i < numberOfResumes - 1; i++) {
-                storage[i] = storage[i + 1];
-            }
+            if (numberOfResumes - 1 - positionOfResumeInStorage >= 0)
+                System.arraycopy(storage, positionOfResumeInStorage + 1, storage, positionOfResumeInStorage, numberOfResumes - 1 - positionOfResumeInStorage);
             numberOfResumes--;
         }
     }
