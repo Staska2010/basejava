@@ -9,14 +9,14 @@ public class ArrayStorage {
     int positionOfResumeInStorage = 0;
 
     void clear() {
-        for (int counter = 0; counter <= numberOfResumes; counter++) {
-            storage[counter] = null;
+        for (int i = 0; i < numberOfResumes; i++) {
+            storage[i] = null;
         }
         numberOfResumes = 0;
     }
 
     void save(Resume r) {
-        if (numberOfResumes < 9999) {
+        if (numberOfResumes < storage.length) {
             storage[numberOfResumes] = r;
             numberOfResumes++;
         } else {
@@ -25,25 +25,20 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-        Resume findResume = null;
-        for (int counter = 0; counter < numberOfResumes; counter++) {
-            if (storage[counter].uuid.equals(uuid)) {
-                findResume = storage[counter];
-                positionOfResumeInStorage = counter;
-                break;
+        for (int i = 0; i < numberOfResumes; i++) {
+            if (storage[i].uuid.equals(uuid)) {
+                positionOfResumeInStorage = i;
+                return storage[i];
             }
         }
-        if (findResume == null) {
-            System.out.println("No such resume in storage: ");
-        }
-        return findResume;
+        return null;
     }
 
     void delete(String uuid) {
         Resume deleteResume = get(uuid);
         if (deleteResume != null) {
-            for (int counter = positionOfResumeInStorage; counter < numberOfResumes; counter++) {
-                storage[counter] = storage[counter + 1];
+            for (int i = positionOfResumeInStorage; i < numberOfResumes - 1; i++) {
+                storage[i] = storage[i + 1];
             }
             numberOfResumes--;
         }
