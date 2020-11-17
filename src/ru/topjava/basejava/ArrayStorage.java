@@ -1,3 +1,5 @@
+package ru.topjava.basejava;
+
 import java.util.Arrays;
 
 /**
@@ -16,17 +18,18 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-        if (numberOfResumes < storage.length) {
-            storage[numberOfResumes] = r;
-            numberOfResumes++;
-        } else {
-            System.out.println("Not enough space in storage");
+        if (get(r.getUuid()) != null) {
+            if (numberOfResumes < storage.length) {
+                storage[numberOfResumes++] = r;
+            } else {
+                System.out.println("Not enough space in storage");
+            }
         }
     }
 
     Resume get(String uuid) {
         for (int i = 0; i < numberOfResumes; i++) {
-            if (storage[i].uuid.equals(uuid)) {
+            if (storage[i].getUuid().equals(uuid)) {
                 positionOfResumeInStorage = i;
                 return storage[i];
             }
@@ -35,11 +38,19 @@ public class ArrayStorage {
     }
 
     void delete(String uuid) {
-        Resume deleteResume = get(uuid);
-        if (deleteResume != null) {
-            if (numberOfResumes - 1 - positionOfResumeInStorage >= 0)
-                System.arraycopy(storage, positionOfResumeInStorage + 1, storage, positionOfResumeInStorage, numberOfResumes - 1 - positionOfResumeInStorage);
+        if (get(uuid) != null) {
+            System.arraycopy(storage, positionOfResumeInStorage + 1, storage, positionOfResumeInStorage, numberOfResumes - 1 - positionOfResumeInStorage);
             numberOfResumes--;
+        } else {
+            System.out.println("Резюме не найдено");
+        }
+    }
+
+    void update(Resume r) {
+        if (get(r.getUuid()) != null) {
+            storage[positionOfResumeInStorage] = r;
+        } else {
+            System.out.println("Резюме не найдено");
         }
     }
 

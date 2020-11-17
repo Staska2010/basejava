@@ -1,3 +1,5 @@
+package ru.topjava.basejava;
+
 /**
  * Test for your ArrayStorage implementation
  */
