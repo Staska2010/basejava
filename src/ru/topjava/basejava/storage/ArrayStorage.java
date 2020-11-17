@@ -1,4 +1,6 @@
-package ru.topjava.basejava;
+package ru.topjava.basejava.storage;
+
+import ru.topjava.basejava.model.Resume;
 
 import java.util.Arrays;
 
@@ -6,19 +8,19 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    Resume[] storage = new Resume[10000];
-    int numberOfResumes = 0;
-    int positionOfResumeInStorage = 0;
+    private Resume[] storage = new Resume[10000];
+    private int numberOfResumes = 0;
+    private int positionOfResumeInStorage = 0;
 
-    void clear() {
-        for (int i = 0; i < numberOfResumes; i++) {
-            storage[i] = null;
-        }
+    public void clear() {
+        Arrays.fill(storage, null);
         numberOfResumes = 0;
     }
 
-    void save(Resume r) {
+    public void save(Resume r) {
         if (get(r.getUuid()) != null) {
+            System.out.println("Такая запись существует");
+        } else {
             if (numberOfResumes < storage.length) {
                 storage[numberOfResumes++] = r;
             } else {
@@ -27,7 +29,7 @@ public class ArrayStorage {
         }
     }
 
-    Resume get(String uuid) {
+    public Resume get(String uuid) {
         for (int i = 0; i < numberOfResumes; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 positionOfResumeInStorage = i;
@@ -37,7 +39,7 @@ public class ArrayStorage {
         return null;
     }
 
-    void delete(String uuid) {
+    public void delete(String uuid) {
         if (get(uuid) != null) {
             System.arraycopy(storage, positionOfResumeInStorage + 1, storage, positionOfResumeInStorage, numberOfResumes - 1 - positionOfResumeInStorage);
             numberOfResumes--;
@@ -46,7 +48,7 @@ public class ArrayStorage {
         }
     }
 
-    void update(Resume r) {
+    public void update(Resume r) {
         if (get(r.getUuid()) != null) {
             storage[positionOfResumeInStorage] = r;
         } else {
@@ -57,11 +59,11 @@ public class ArrayStorage {
     /**
      * @return array, contains only Resumes in storage (without null)
      */
-    Resume[] getAll() {
+    public Resume[] getAll() {
         return Arrays.copyOf(storage, numberOfResumes);
     }
 
-    int size() {
+    public int size() {
         return numberOfResumes;
     }
 }

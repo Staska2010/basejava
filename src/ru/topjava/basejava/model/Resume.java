@@ -1,4 +1,4 @@
-package ru.topjava.basejava;
+package ru.topjava.basejava.model;
 /**
  * Initial resume class
  */
