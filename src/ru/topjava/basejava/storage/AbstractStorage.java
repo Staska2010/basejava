@@ -32,5 +32,43 @@ public abstract class AbstractStorage implements IStorage {
         numberOfResumes = 0;
     }
 
+    public void save(Resume r) {
+        int index = getIndex(r.getUuid());
+        if (index >= 0) {
+            System.out.println("Resume  " + r.getUuid() + " already exists");
+        } else {
+            if (numberOfResumes >= storage.length) {
+                System.out.println("Not enough space");
+            } else {
+                insertResume(r, index);
+                numberOfResumes++;
+            }
+        }
+    }
+
+    public void delete(String uuid) {
+        int index = getIndex(uuid);
+        if (index == -1) {
+            System.out.println("Резюме " + uuid + " не найдено");
+        } else {
+            deleteResume(index);
+            storage[numberOfResumes - 1] = null;
+            numberOfResumes--;
+        }
+    }
+
+    public void update(Resume r) {
+        int index = getIndex(r.getUuid());
+        if (index < 0) {
+            System.out.println("Резюме не найдено");
+        } else {
+            index = Math.abs(index);
+            storage[index] = r;
+        }
+    }
+
     protected abstract int getIndex(String uuid);
+    protected abstract void insertResume(Resume r, int index);
+    protected abstract void deleteResume(int index);
+
 }

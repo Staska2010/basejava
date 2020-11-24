@@ -1,18 +1,16 @@
 package ru.topjava.basejava;
 
 import ru.topjava.basejava.model.Resume;
-import ru.topjava.basejava.storage.AbstractStorage;
 import ru.topjava.basejava.storage.ArrayStorage;
 import ru.topjava.basejava.storage.IStorage;
 import ru.topjava.basejava.storage.SortedArrayStorage;
 
-import java.util.Arrays;
 
 /**
- * Test for your ArrayStorage implementation
+ * Test for your ArrayStorage implementation.
  */
 public class MainTestArrayStorage {
-    static final IStorage ARRAY_STORAGE = new SortedArrayStorage();
+    static final IStorage ARRAY_STORAGE = new ArrayStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume();
