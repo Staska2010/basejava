@@ -1,5 +1,8 @@
 package ru.topjava.basejava.storage;
 
+import ru.topjava.basejava.exception.ExistsStorageException;
+import ru.topjava.basejava.exception.NotExistsStorageException;
+import ru.topjava.basejava.exception.StorageException;
 import ru.topjava.basejava.model.Resume;
 
 import java.util.Arrays;
@@ -35,10 +38,10 @@ public abstract class AbstractStorage implements IStorage {
     public void save(Resume r) {
         int index = getIndex(r.getUuid());
         if (index >= 0) {
-            System.out.println("Resume  " + r.getUuid() + " already exists");
+            throw new ExistsStorageException(r.getUuid());
         } else {
             if (numberOfResumes >= storage.length) {
-                System.out.println("Not enough space");
+                throw new StorageException("Not enough space", r.getUuid());
             } else {
                 insertResume(r, index);
                 numberOfResumes++;
@@ -49,7 +52,7 @@ public abstract class AbstractStorage implements IStorage {
     public void delete(String uuid) {
         int index = getIndex(uuid);
         if (index == -1) {
-            System.out.println("Резюме " + uuid + " не найдено");
+            throw new NotExistsStorageException(uuid);
         } else {
             deleteResume(index);
             storage[numberOfResumes - 1] = null;
@@ -60,7 +63,7 @@ public abstract class AbstractStorage implements IStorage {
     public void update(Resume r) {
         int index = getIndex(r.getUuid());
         if (index < 0) {
-            System.out.println("Резюме не найдено");
+            throw new NotExistsStorageException(r.getUuid());
         } else {
             index = Math.abs(index);
             storage[index] = r;
