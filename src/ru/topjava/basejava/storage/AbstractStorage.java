@@ -8,8 +8,9 @@ import ru.topjava.basejava.model.Resume;
 import java.util.Arrays;
 
 public abstract class AbstractStorage implements IStorage {
-    protected final Resume[] storage = new Resume[10000];
     protected int numberOfResumes = 0;
+    protected final int STORAGE_LIMIT = 10000;
+    protected final Resume[] storage = new Resume[STORAGE_LIMIT];
 
     public int size() {
         return numberOfResumes;
@@ -18,7 +19,7 @@ public abstract class AbstractStorage implements IStorage {
     public Resume get(String uuid) {
         int index = getIndex(uuid);
         if (index < 0) {
-            return null;
+            throw new NotExistsStorageException(uuid);
         }
         return storage[index];
     }
@@ -65,13 +66,13 @@ public abstract class AbstractStorage implements IStorage {
         if (index < 0) {
             throw new NotExistsStorageException(r.getUuid());
         } else {
-            index = Math.abs(index);
             storage[index] = r;
         }
     }
 
     protected abstract int getIndex(String uuid);
-    protected abstract void insertResume(Resume r, int index);
-    protected abstract void deleteResume(int index);
 
+    protected abstract void insertResume(Resume r, int index);
+
+    protected abstract void deleteResume(int index);
 }
