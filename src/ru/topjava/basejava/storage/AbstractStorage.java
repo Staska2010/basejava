@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public abstract class AbstractStorage implements IStorage {
     protected int numberOfResumes = 0;
-    protected final int STORAGE_LIMIT = 10000;
+    protected final static int STORAGE_LIMIT = 10_000;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
 
     public int size() {
@@ -36,18 +36,15 @@ public abstract class AbstractStorage implements IStorage {
         numberOfResumes = 0;
     }
 
-    public void save(Resume r) {
-        int index = getIndex(r.getUuid());
+    public void save(Resume resume) {
+        int index = getIndex(resume.getUuid());
         if (index >= 0) {
-            throw new ExistsStorageException(r.getUuid());
-        } else {
-            if (numberOfResumes >= storage.length) {
-                throw new StorageException("Not enough space", r.getUuid());
-            } else {
-                insertResume(r, index);
-                numberOfResumes++;
-            }
+            throw new ExistsStorageException(resume.getUuid());
+        } else if (numberOfResumes >= storage.length) {
+            throw new StorageException("Not enough space", resume.getUuid());
         }
+        insertResume(resume, index);
+        numberOfResumes++;
     }
 
     public void delete(String uuid) {
