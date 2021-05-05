@@ -5,12 +5,7 @@ import ru.topjava.basejava.model.Resume;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage extends AbstractStorage {
-
-    @Override
-    public void insertResume(Resume r, int index) {
-        storage[numberOfResumes] = r;
-    }
+public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected int getIndex(String uuid) {
@@ -23,7 +18,12 @@ public class ArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public void deleteResume(int index) {
+    public void insertResumeToArray(Resume r, int index) {
+        storage[numberOfResumes] = r;
+    }
+
+    @Override
+    public void replaceDeletedElement(int index) {
         storage[index] = storage[numberOfResumes - 1];
     }
 }

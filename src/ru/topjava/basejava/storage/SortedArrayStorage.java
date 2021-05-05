@@ -4,22 +4,26 @@ import ru.topjava.basejava.model.Resume;
 
 import java.util.Arrays;
 
-public class SortedArrayStorage extends AbstractStorage {
+/**
+ * Sorted array based storage for Resumes
+ */
+
+public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
     protected int getIndex(String uuid) {
-        Resume dummy = new Resume();
-        dummy.setUuid(uuid);
+        Resume dummy = new Resume(uuid);
         return Arrays.binarySearch(storage, 0, numberOfResumes, dummy);
     }
 
-    public void insertResume(Resume r, int index) {
+    @Override
+    protected void insertResumeToArray(Resume r, int index) {
         index = Math.abs(index);
         System.arraycopy(storage, index - 1, storage, index, numberOfResumes - index + 1);
         storage[index - 1] = r;
     }
 
     @Override
-    public void deleteResume(int index) {
+    protected void replaceDeletedElement(int index) {
         System.arraycopy(storage, index + 1, storage, index, numberOfResumes - index);
     }
 }

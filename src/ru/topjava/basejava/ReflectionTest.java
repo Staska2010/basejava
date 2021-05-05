@@ -16,13 +16,11 @@ public class ReflectionTest {
         Class<? extends Resume> aClass = r.getClass();
         Method[] methods = aClass.getDeclaredMethods();
         for (Method m : methods) {
-            if (m.getName().toLowerCase().equals("tostring")) {
+            if (m.getName().equalsIgnoreCase("tostring")) {
                 System.out.println(m.invoke(r));
                 break;
             }
         }
-
-        // Class<?> clazz = ;
         System.out.println(Class.forName("ru.topjava.basejava.ReflectionTest").getPackageName());
     }
 
