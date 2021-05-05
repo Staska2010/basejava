@@ -4,18 +4,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import ru.topjava.basejava.exception.NotExistsStorageException;
-import ru.topjava.basejava.exception.StorageException;
 import ru.topjava.basejava.model.Resume;
 
 import static org.junit.Assert.*;
-import static ru.topjava.basejava.storage.AbstractArrayStorage.STORAGE_LIMIT;
 
 public abstract class AbstractStorageTest {
 
-    private IStorage storage;
+    protected IStorage storage;
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
+    private static final String UUID_3  = "uuid3";
     private static final String UUID_4 = "uuid4";
     private static final Resume RESUME_1;
     private static final Resume RESUME_2;
@@ -52,17 +50,17 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void ifGetExistedResumeThenInstancesAreCorrect() {
-        assertSame(storage.get("uuid1"), RESUME_1);
+        assertSame(RESUME_1, storage.get(UUID_1));
     }
 
     @Test(expected = NotExistsStorageException.class)
     public void ifGetNotExistingResumeThenException() {
-        storage.get("dummy");
+        storage.get(UUID_4);
     }
 
     @Test(expected = NotExistsStorageException.class)
     public void ifGetNotExistedThenException() {
-        storage.get("dummy");
+        storage.get(UUID_4);
     }
 
     @Test
@@ -84,43 +82,30 @@ public abstract class AbstractStorageTest {
     public void ifCorrectlySavedThenResumeIsInStorage() {
         storage.save(RESUME_4);
         assertEquals(4, storage.size());
-        assertEquals(RESUME_4, storage.get(RESUME_4.getUuid()));
-    }
-
-    @Test(expected = StorageException.class)
-    public void ifNotEnoughSpaceToSaveResumeThenException() {
-        try {
-            for (int i = storage.size(); i < STORAGE_LIMIT; i++) {
-                storage.save(new Resume());
-            }
-        } catch (StorageException e) {
-            fail("The exception popped ahead of time");
-        }
-        storage.save(new Resume());
+        assertEquals(RESUME_4, storage.get(UUID_4));
     }
 
     @Test(expected = NotExistsStorageException.class)
     public void ifDeleteNotExistingThenException() {
-        storage.delete("dummy");
+        storage.delete(UUID_4);
     }
 
-    @Test
-    public void ifDeleteExistingItemThenSizeIsTwo() {
-        storage.delete(RESUME_2.getUuid());
-        assertEquals(2, storage.size());
+    @Test(expected = NotExistsStorageException.class)
+    public void ifDeleteExistingItemThenExceptionWhileGet() {
+        storage.delete(UUID_2);
+        storage.get(UUID_2);
     }
 
     @Test
     public void ifUpdateExistingResumeThenTrue() {
-        Resume updateResume = new Resume("uuid3");
+        Resume updateResume = new Resume(UUID_3);
         storage.update(updateResume);
-        assertEquals(updateResume, storage.get("uuid3"));
+        assertEquals(updateResume, storage.get(UUID_3));
     }
 
-    @Test
+    @Test(expected = NotExistsStorageException.class)
     public void ifUpdateNotExistingResumeThenException() {
-        Resume updateResume = new Resume("uuid3");
+        Resume updateResume = new Resume(UUID_4);
         storage.update(updateResume);
-        assertEquals(updateResume, storage.get("uuid3"));
     }
 }
