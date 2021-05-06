@@ -21,8 +21,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume getResume(int index) {
-        return storage[index];
+    public Resume getResume(Object index) {
+        return storage[(int) index];
     }
 
     /**
@@ -34,7 +34,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public void saveResume(Resume resume, int index) {
+    public void saveResume(Resume resume, Object index) {
         if (numberOfResumes >= storage.length) {
             throw new StorageException("Not enough space", resume.getUuid());
         }
@@ -43,19 +43,24 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public void deleteResume(int index) {
+    public void deleteResume(Object index) {
         replaceDeletedElement(index);
         storage[numberOfResumes - 1] = null;
         numberOfResumes--;
     }
 
     @Override
-    public void updateResume(Resume r, int index) {
-        storage[index] = r;
+    public void updateResume(Resume r, Object index) {
+        storage[(int) index] = r;
     }
 
-    protected abstract void insertResumeToArray(Resume r, int index);
+    @Override
+    protected boolean isInStorage(Object index) {
+        return (int) index >= 0;
+    }
 
-    protected abstract void replaceDeletedElement(int index);
+    protected abstract void insertResumeToArray(Resume r, Object index);
+
+    protected abstract void replaceDeletedElement(Object index);
 
 }

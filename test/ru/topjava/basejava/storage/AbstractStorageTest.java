@@ -6,6 +6,8 @@ import org.junit.Test;
 import ru.topjava.basejava.exception.NotExistsStorageException;
 import ru.topjava.basejava.model.Resume;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public abstract class AbstractStorageTest {
@@ -13,7 +15,7 @@ public abstract class AbstractStorageTest {
     protected IStorage storage;
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
-    private static final String UUID_3  = "uuid3";
+    private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
     private static final Resume RESUME_1;
     private static final Resume RESUME_2;
@@ -66,6 +68,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void ifGetAllThenNumberAndInstancesAreCorrect() {
         Resume[] actualResumes = storage.getAll();
+        Arrays.sort(actualResumes);
         assertEquals(3, storage.size());
         assertEquals(RESUME_1, actualResumes[0]);
         assertEquals(RESUME_2, actualResumes[1]);
@@ -94,6 +97,7 @@ public abstract class AbstractStorageTest {
     public void ifDeleteExistingItemThenExceptionWhileGet() {
         storage.delete(UUID_2);
         storage.get(UUID_2);
+        assertEquals(2, storage.size());
     }
 
     @Test

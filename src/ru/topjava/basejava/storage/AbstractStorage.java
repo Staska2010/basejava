@@ -7,8 +7,8 @@ import ru.topjava.basejava.model.Resume;
 public abstract class AbstractStorage implements IStorage {
     @Override
     public void save(Resume r) {
-        int index = getSupposedIndex(r.getUuid());
-        saveResume(r, index);
+        Object insertPosition = getSupposedIndex(r.getUuid());
+        saveResume(r, insertPosition);
     }
 
     @Override
@@ -18,45 +18,47 @@ public abstract class AbstractStorage implements IStorage {
 
     @Override
     public void delete(String uuid) {
-        int index = getIndexIfPresent(uuid);
+        Object index = getIndexIfPresent(uuid);
         deleteResume(index);
     }
 
     @Override
     public void update(Resume r) {
-        int index = getIndexIfPresent(r.getUuid());
+        Object index = getIndexIfPresent(r.getUuid());
         updateResume(r, index);
     }
 
-    private int getIndexIfPresent(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
+    private Object getIndexIfPresent(String uuid) {
+        Object index = getIndex(uuid);
+        if (!isInStorage(index)) {
             throw new NotExistsStorageException(uuid);
         }
         return index;
     }
 
     /**
-     * @param uuid
-     * @return supposed index for element inserting
-     * works for derivatives that use the BinarySearch method
-     * to find the index to insert element
+     * @param uuid Resume record ID
+     * @return index for index-based storages.
+     * * For derivatives that use the BinarySearch method
+     * * to find the index to insert element it returns supposed index.
      */
-    private int getSupposedIndex(String uuid) {
-        int index = getIndex(uuid);
-        if (index >= 0) {
+    private Object getSupposedIndex(String uuid) {
+        Object index = getIndex(uuid);
+        if (isInStorage(index)) {
             throw new ExistsStorageException(uuid);
         }
         return index;
     }
 
-    protected abstract int getIndex(String uuid);
+    protected abstract boolean isInStorage(Object index);
 
-    protected abstract void saveResume(Resume r, int index);
+    protected abstract Object getIndex(String uuid);
 
-    protected abstract Resume getResume(int index);
+    protected abstract void saveResume(Resume r, Object insertPosition);
 
-    protected abstract void deleteResume(int index);
+    protected abstract Resume getResume(Object index);
 
-    protected abstract void updateResume(Resume r, int index);
+    protected abstract void deleteResume(Object index);
+
+    protected abstract void updateResume(Resume r, Object index);
 }
