@@ -96,8 +96,8 @@ public abstract class AbstractStorageTest {
     @Test(expected = NotExistsStorageException.class)
     public void ifDeleteExistingItemThenExceptionWhileGet() {
         storage.delete(UUID_2);
-        storage.get(UUID_2);
         assertEquals(2, storage.size());
+        storage.get(UUID_2);
     }
 
     @Test

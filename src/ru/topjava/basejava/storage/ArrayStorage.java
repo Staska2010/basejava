@@ -17,12 +17,12 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    public void insertResumeToArray(Resume r, Object index) {
+    public void insertResumeToArray(Resume r, int index) {
         storage[numberOfResumes] = r;
     }
 
     @Override
-    public void replaceDeletedElement(Object index) {
+    public void replaceDeletedElement(int index) {
         storage[(int) index] = storage[numberOfResumes - 1];
     }
 }

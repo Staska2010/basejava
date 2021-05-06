@@ -2,12 +2,11 @@ package ru.topjava.basejava.storage;
 
 import ru.topjava.basejava.model.Resume;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MapStorage extends AbstractStorage {
-    Map<String, Resume> storage = new HashMap<>();
+    private Map<String, Resume> storage = new HashMap<>();
 
     @Override
     protected boolean isInStorage(Object index) {
@@ -47,8 +46,7 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     public Resume[] getAll() {
-        Collection<Resume> list = storage.values();
-        return list.toArray(new Resume[0]);
+        return storage.values().toArray(new Resume[0]);
     }
 
     @Override

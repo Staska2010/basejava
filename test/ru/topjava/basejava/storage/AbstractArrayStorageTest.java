@@ -7,7 +7,7 @@ import ru.topjava.basejava.model.Resume;
 
 import static ru.topjava.basejava.storage.AbstractArrayStorage.STORAGE_LIMIT;
 
-public class AbstractArrayStorageTest extends AbstractStorageTest {
+public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
     public AbstractArrayStorageTest(IStorage storage) {
         super(storage);
     }

@@ -38,13 +38,13 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         if (numberOfResumes >= storage.length) {
             throw new StorageException("Not enough space", resume.getUuid());
         }
-        insertResumeToArray(resume, index);
+        insertResumeToArray(resume, (int) index);
         numberOfResumes++;
     }
 
     @Override
     public void deleteResume(Object index) {
-        replaceDeletedElement(index);
+        replaceDeletedElement((int) index);
         storage[numberOfResumes - 1] = null;
         numberOfResumes--;
     }
@@ -59,8 +59,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return (int) index >= 0;
     }
 
-    protected abstract void insertResumeToArray(Resume r, Object index);
+    protected abstract void insertResumeToArray(Resume r, int index);
 
-    protected abstract void replaceDeletedElement(Object index);
+    protected abstract void replaceDeletedElement(int index);
 
 }
