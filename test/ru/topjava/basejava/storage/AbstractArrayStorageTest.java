@@ -16,11 +16,11 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
     public void ifNotEnoughSpaceToSaveResumeThenException() {
         try {
             for (int i = storage.size(); i < STORAGE_LIMIT; i++) {
-                storage.save(new Resume());
+                storage.save(new Resume(""));
             }
         } catch (StorageException e) {
             Assert.fail("The exception popped ahead of time");
         }
-        storage.save(new Resume());
+        storage.save(new Resume(""));
     }
 }

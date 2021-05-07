@@ -6,9 +6,10 @@ import org.junit.Test;
 import ru.topjava.basejava.exception.NotExistsStorageException;
 import ru.topjava.basejava.model.Resume;
 
-import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public abstract class AbstractStorageTest {
 
@@ -23,10 +24,10 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_4;
 
     static {
-        RESUME_1 = new Resume(UUID_1);
-        RESUME_2 = new Resume(UUID_2);
-        RESUME_3 = new Resume(UUID_3);
-        RESUME_4 = new Resume(UUID_4);
+        RESUME_1 = new Resume(UUID_1, "1");
+        RESUME_2 = new Resume(UUID_2, "2");
+        RESUME_3 = new Resume(UUID_3, "3");
+        RESUME_4 = new Resume(UUID_4, "4");
     }
 
     AbstractStorageTest(IStorage storage) {
@@ -66,13 +67,13 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void ifGetAllThenNumberAndInstancesAreCorrect() {
-        Resume[] actualResumes = storage.getAll();
-        Arrays.sort(actualResumes);
+    //TODO implement getting a sorted list
+    public void ifGetAllSortedThenNumberAndInstancesAreCorrect() {
+        List<Resume> actualResumes = storage.getAllSorted();
         assertEquals(3, storage.size());
-        assertEquals(RESUME_1, actualResumes[0]);
-        assertEquals(RESUME_2, actualResumes[1]);
-        assertEquals(RESUME_3, actualResumes[2]);
+        assertEquals(RESUME_1, actualResumes.get(0));
+        assertEquals(RESUME_2, actualResumes.get(1));
+        assertEquals(RESUME_3, actualResumes.get(2));
     }
 
     @Test
@@ -102,14 +103,12 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void ifUpdateExistingResumeThenTrue() {
-        Resume updateResume = new Resume(UUID_3);
-        storage.update(updateResume);
-        assertEquals(updateResume, storage.get(UUID_3));
+        storage.update(RESUME_3);
+        assertEquals(RESUME_3, storage.get(UUID_3));
     }
 
     @Test(expected = NotExistsStorageException.class)
     public void ifUpdateNotExistingResumeThenException() {
-        Resume updateResume = new Resume(UUID_4);
-        storage.update(updateResume);
+        storage.update(RESUME_4);
     }
 }

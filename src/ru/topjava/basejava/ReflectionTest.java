@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 public class ReflectionTest {
 
     public static void main(String[] args) throws IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-        Resume r = new Resume();
+        Resume r = new Resume("Test Name");
         Class<? extends Resume> aClass = r.getClass();
         Method[] methods = aClass.getDeclaredMethods();
         for (Method m : methods) {

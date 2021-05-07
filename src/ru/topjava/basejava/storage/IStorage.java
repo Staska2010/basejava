@@ -2,6 +2,8 @@ package ru.topjava.basejava.storage;
 
 import ru.topjava.basejava.model.Resume;
 
+import java.util.List;
+
 
 public interface IStorage {
     void clear();
@@ -17,7 +19,7 @@ public interface IStorage {
     /**
      * @return array, contains only Resumes in storage (without null)
      */
-    Resume[] getAll();
+    List<Resume> getAllSorted();
 
     int size();
 }

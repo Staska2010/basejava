@@ -3,6 +3,7 @@ package ru.topjava.basejava.storage;
 import ru.topjava.basejava.model.Resume;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ListStorage extends AbstractStorage {
     private List<Resume> storage = new LinkedList<>();
@@ -48,8 +49,8 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return storage.toArray(new Resume[0]);
+    public List<Resume> getAllSorted() {
+        return storage.stream().sorted().collect(Collectors.toList());
     }
 
     @Override

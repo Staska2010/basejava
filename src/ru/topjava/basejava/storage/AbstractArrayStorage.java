@@ -4,6 +4,8 @@ import ru.topjava.basejava.exception.StorageException;
 import ru.topjava.basejava.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
 
@@ -29,8 +31,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     @Override
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, numberOfResumes);
+    public List<Resume> getAllSorted() {
+        return Arrays.stream(storage,0,numberOfResumes).sorted().collect(Collectors.toList());
     }
 
     @Override
