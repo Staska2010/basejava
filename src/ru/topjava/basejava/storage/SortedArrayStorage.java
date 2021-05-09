@@ -4,7 +4,6 @@ import ru.topjava.basejava.model.Resume;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Sorted array based storage for Resumes
@@ -20,19 +19,13 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void insertResumeToArray(Resume r, int index) {
-        int position = Math.abs((int) index);
+        int position = Math.abs(index);
         System.arraycopy(storage, position - 1, storage, position, numberOfResumes - position + 1);
         storage[position - 1] = r;
     }
 
     @Override
     protected void replaceDeletedElement(int index) {
-        int position = (int) index;
-        System.arraycopy(storage, position + 1, storage, position, numberOfResumes - position);
-    }
-
-    @Override
-    public List<Resume> getAllSorted() {
-        return Arrays.asList(storage);
+        System.arraycopy(storage, index + 1, storage, index, numberOfResumes - index);
     }
 }

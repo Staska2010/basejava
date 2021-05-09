@@ -31,8 +31,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     @Override
-    public List<Resume> getAllSorted() {
-        return Arrays.stream(storage,0,numberOfResumes).sorted().collect(Collectors.toList());
+    public List<Resume> getAll() {
+        return Arrays.stream(storage, 0, numberOfResumes).collect(Collectors.toList());
     }
 
     @Override

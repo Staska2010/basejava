@@ -2,10 +2,10 @@ package ru.topjava.basejava.storage;
 
 import ru.topjava.basejava.model.Resume;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class MapStorage extends AbstractStorage {
     protected Map<String, Resume> storage = new HashMap<>();
@@ -47,8 +47,8 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        return storage.values().stream().sorted().collect(Collectors.toList());
+    public List<Resume> getAll() {
+        return new ArrayList<>(storage.values());
     }
 
     @Override

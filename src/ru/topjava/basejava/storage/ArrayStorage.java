@@ -23,6 +23,6 @@ public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
     public void replaceDeletedElement(int index) {
-        storage[(int) index] = storage[numberOfResumes - 1];
+        storage[index] = storage[numberOfResumes - 1];
     }
 }

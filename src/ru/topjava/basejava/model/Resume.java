@@ -52,7 +52,7 @@ public class Resume implements Comparable<Resume> {
     }
 
     /**
-     * Blokh's standard receipt for getting hash-code.
+     * Bloch's standard receipt for getting hash-code.
      *
      * @return hash for Resume object
      */

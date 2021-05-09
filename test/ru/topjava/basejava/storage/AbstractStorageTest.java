@@ -6,6 +6,7 @@ import org.junit.Test;
 import ru.topjava.basejava.exception.NotExistsStorageException;
 import ru.topjava.basejava.model.Resume;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -36,8 +37,8 @@ public abstract class AbstractStorageTest {
 
     @Before
     public void setUp() {
-        storage.save(RESUME_1);
         storage.save(RESUME_2);
+        storage.save(RESUME_1);
         storage.save(RESUME_3);
     }
 
@@ -70,10 +71,8 @@ public abstract class AbstractStorageTest {
     //TODO implement getting a sorted list
     public void ifGetAllSortedThenNumberAndInstancesAreCorrect() {
         List<Resume> actualResumes = storage.getAllSorted();
-        assertEquals(3, storage.size());
-        assertEquals(RESUME_1, actualResumes.get(0));
-        assertEquals(RESUME_2, actualResumes.get(1));
-        assertEquals(RESUME_3, actualResumes.get(2));
+        assertEquals(3, actualResumes.size());
+        assertEquals(Arrays.asList(RESUME_1, RESUME_2, RESUME_3), actualResumes);
     }
 
     @Test
