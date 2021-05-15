@@ -1,5 +1,7 @@
 package ru.topjava.basejava.model;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -9,8 +11,11 @@ import java.util.UUID;
 public class Resume implements Comparable<Resume> {
 
     // Unique identifier
-    private String uuid;
-    private String fullName;
+    private final String uuid;
+    private final String fullName;
+
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private final Map<SectionType, ListRecord> records = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -25,16 +30,24 @@ public class Resume implements Comparable<Resume> {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
     public String getFullName() {
         return fullName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public Map<ContactType, String> getContacts() {
+        return contacts;
+    }
+
+    public void setContact(ContactType type, String field) {
+        contacts.put(type, field);
+    }
+
+    public Map<SectionType, ListRecord> getRecords() {
+        return records;
+    }
+
+    public void setRecord(SectionType type, ListRecord listRecord) {
+        records.put(type, listRecord);
     }
 
     @Override
@@ -42,7 +55,6 @@ public class Resume implements Comparable<Resume> {
         return uuid + ": " + fullName;
     }
 
-    // TODO Check in future: uuid.equalsIgnoreCase(resume.uuid) && fullName.equalsIgnoreCase(resume.fullName)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -56,12 +68,6 @@ public class Resume implements Comparable<Resume> {
      *
      * @return hash for Resume object
      */
-    //TODO  String fields would be case-sensitive
-    //     * equalsIgnoreCase in overridden equals method works in toLowerCase way
-    //     *
-    //     *   int result = Objects.hash(uuid.toLowerCase(Locale.ROOT));
-    //     *   result = 31 * result + Objects.hashCode(fullName.toLowerCase(Locale.ROOT));
-    //     *
     @Override
     public int hashCode() {
         int result = uuid.hashCode();
@@ -76,7 +82,6 @@ public class Resume implements Comparable<Resume> {
      * @param resume Resume object to compare
      * @return result of Resume comparison
      */
-    //TODO CHECK: compareToIgnoreCase
     @Override
     public int compareTo(Resume resume) {
         if (uuid.equals(resume.uuid)) {

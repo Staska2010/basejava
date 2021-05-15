@@ -11,7 +11,7 @@ import java.util.Comparator;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
-    protected Object getIndex(String uuid) {
+    protected Integer getIndex(String uuid) {
         Resume dummy = new Resume(uuid, "dummy");
         return Arrays.binarySearch(storage, 0, numberOfResumes, dummy,
                 Comparator.comparing(Resume::getUuid));

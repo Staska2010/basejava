@@ -6,16 +6,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
     private List<Resume> storage = new LinkedList<>();
 
     @Override
-    protected boolean isInStorage(Object index) {
-        return (int) index >= 0;
+    protected boolean isInStorage(Integer index) {
+        return index >= 0;
     }
 
     @Override
-    public Object getIndex(String uuid) {
+    public Integer getIndex(String uuid) {
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).getUuid().equals(uuid)) {
                 return i;
@@ -25,23 +25,23 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public void saveResume(Resume r, Object index) {
+    public void saveResume(Resume r, Integer index) {
         storage.add(r);
     }
 
     @Override
-    protected Resume getResume(Object index) {
-        return storage.get((int) index);
+    protected Resume getResume(Integer index) {
+        return storage.get(index);
     }
 
     @Override
-    protected void deleteResume(Object index) {
-        storage.remove((int) index);
+    protected void deleteResume(Integer index) {
+        storage.remove(index.intValue());
     }
 
     @Override
-    protected void updateResume(Resume r, Object index) {
-        storage.set((int) index, r);
+    protected void updateResume(Resume r, Integer index) {
+        storage.set(index, r);
     }
 
     @Override

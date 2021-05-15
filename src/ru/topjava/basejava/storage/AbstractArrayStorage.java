@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
 
     protected final static int STORAGE_LIMIT = 10_000;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
@@ -23,8 +23,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume getResume(Object index) {
-        return storage[(int) index];
+    public Resume getResume(Integer index) {
+        return storage[index];
     }
 
     /**
@@ -36,29 +36,29 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public void saveResume(Resume resume, Object index) {
+    public void saveResume(Resume resume, Integer index) {
         if (numberOfResumes >= storage.length) {
             throw new StorageException("Not enough space", resume.getUuid());
         }
-        insertResumeToArray(resume, (int) index);
+        insertResumeToArray(resume, index);
         numberOfResumes++;
     }
 
     @Override
-    public void deleteResume(Object index) {
-        replaceDeletedElement((int) index);
+    public void deleteResume(Integer index) {
+        replaceDeletedElement(index);
         storage[numberOfResumes - 1] = null;
         numberOfResumes--;
     }
 
     @Override
-    public void updateResume(Resume r, Object index) {
-        storage[(int) index] = r;
+    public void updateResume(Resume r, Integer index) {
+        storage[index] = r;
     }
 
     @Override
-    protected boolean isInStorage(Object index) {
-        return (int) index >= 0;
+    protected boolean isInStorage(Integer index) {
+        return index >= 0;
     }
 
     protected abstract void insertResumeToArray(Resume r, int index);
