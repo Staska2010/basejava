@@ -1,9 +1,9 @@
 package ru.topjava.basejava.model;
 
-public class SimpleListRecord extends ListRecord {
+public class SimpleAbstractRecord extends AbstractRecord {
     private final String simpleText;
 
-    public SimpleListRecord(String simpleText) {
+    public SimpleAbstractRecord(String simpleText) {
         this.simpleText = simpleText;
     }
 

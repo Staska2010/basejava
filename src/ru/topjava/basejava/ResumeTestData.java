@@ -21,10 +21,10 @@ public class ResumeTestData {
         testResume.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
         testResume.setContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
         testResume.setRecord(SectionType.OBJECTIVES,
-                new SimpleListRecord("Ведущий стажировок и корпоративного обучения по " +
+                new SimpleAbstractRecord("Ведущий стажировок и корпоративного обучения по " +
                         "Java Web и Enterprise технологиям"));
         testResume.setRecord(SectionType.PERSONAL,
-                new SimpleListRecord("Аналитический склад ума, сильная логика, креативность, " +
+                new SimpleAbstractRecord("Аналитический склад ума, сильная логика, креативность, " +
                         "инициативность. Пурист кода и архитектуры."));
         testResume.setRecord(SectionType.ACHIEVEMENTS, new BulletedListRecord(List.of(
                 "С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\"",

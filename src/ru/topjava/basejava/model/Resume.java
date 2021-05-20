@@ -15,7 +15,7 @@ public class Resume implements Comparable<Resume> {
     private final String fullName;
 
     private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
-    private final Map<SectionType, ListRecord> records = new EnumMap<>(SectionType.class);
+    private final Map<SectionType, AbstractRecord> records = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -42,12 +42,12 @@ public class Resume implements Comparable<Resume> {
         contacts.put(type, field);
     }
 
-    public Map<SectionType, ListRecord> getRecords() {
+    public Map<SectionType, AbstractRecord> getRecords() {
         return records;
     }
 
-    public void setRecord(SectionType type, ListRecord listRecord) {
-        records.put(type, listRecord);
+    public void setRecord(SectionType type, AbstractRecord abstractRecord) {
+        records.put(type, abstractRecord);
     }
 
     @Override
@@ -60,7 +60,10 @@ public class Resume implements Comparable<Resume> {
         if (this == o) return true;
         if (!(o instanceof Resume)) return false;
         Resume resume = (Resume) o;
-        return uuid.equals(resume.uuid) && fullName.equals(resume.fullName);
+        return uuid.equals(resume.uuid)
+                && fullName.equals(resume.fullName)
+                && Objects.equals(this.contacts, resume.contacts)
+                && Objects.equals(this.records, resume.records);
     }
 
     /**
@@ -72,6 +75,8 @@ public class Resume implements Comparable<Resume> {
     public int hashCode() {
         int result = uuid.hashCode();
         result = 31 * result + fullName.hashCode();
+        result = 31 * result + Objects.hashCode(contacts);
+        result = 31 * result + Objects.hashCode(records);
         return result;
     }
 
@@ -84,9 +89,6 @@ public class Resume implements Comparable<Resume> {
      */
     @Override
     public int compareTo(Resume resume) {
-        if (uuid.equals(resume.uuid)) {
-            return fullName.compareTo(resume.fullName);
-        }
-        return uuid.compareTo(resume.uuid);
+        return uuid.equals(resume.uuid) ? fullName.compareTo(resume.fullName) : uuid.compareTo(resume.uuid);
     }
 }

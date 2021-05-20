@@ -1,13 +1,14 @@
 package ru.topjava.basejava.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Organization {
-    private String companyName;
-    private LocalDate dateStart;
-    private LocalDate dateEnd;
-    private String position;
-    private String jobDesc;
+    private final String companyName;
+    private final LocalDate dateStart;
+    private final LocalDate dateEnd;
+    private final String position;
+    private final String jobDesc;
 
     public Organization(String companyName, LocalDate dateStart, LocalDate dateEnd, String position, String jobDesc) {
         this.companyName = companyName;
@@ -15,6 +16,19 @@ public class Organization {
         this.dateEnd = dateEnd;
         this.position = position;
         this.jobDesc = jobDesc;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Organization that = (Organization) o;
+        return companyName.equals(that.companyName) && dateStart.equals(that.dateStart) && dateEnd.equals(that.dateEnd) && position.equals(that.position) && jobDesc.equals(that.jobDesc);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(companyName, dateStart, dateEnd, position, jobDesc);
     }
 
     @Override

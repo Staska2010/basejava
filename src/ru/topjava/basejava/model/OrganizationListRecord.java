@@ -2,8 +2,8 @@ package ru.topjava.basejava.model;
 
 import java.util.List;
 
-public class OrganizationListRecord extends ListRecord {
-    List<Organization> organizations;
+public class OrganizationListRecord extends AbstractRecord {
+    private final List<Organization> organizations;
 
     public OrganizationListRecord(List<Organization> records) {
         organizations = records;

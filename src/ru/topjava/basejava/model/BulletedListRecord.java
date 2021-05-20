@@ -2,7 +2,7 @@ package ru.topjava.basejava.model;
 
 import java.util.List;
 
-public class BulletedListRecord extends ListRecord {
+public class BulletedListRecord extends AbstractRecord {
     private final List<String> bulletedRecords;
 
     public BulletedListRecord(List<String> records) {
