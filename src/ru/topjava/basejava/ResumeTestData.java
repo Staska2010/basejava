@@ -42,19 +42,12 @@ public class ResumeTestData {
                 "Languages: Java, Scala, Python/Jython/PL-Python, JavaScript, Groovy"
         )));
         testResume.setRecord(SectionType.EXPERIENCE, new OrganizationListRecord(List.of(
-                new Organization("Java Online Projects",
-                        LocalDate.of(2013, 10, 1),
-                        LocalDate.now(),
-                        "Автор проекта",
-                        "Создание, организация и проведение Java онлайн проектов и стажировок")
-        )));
-        testResume.setRecord(SectionType.EXPERIENCE, new OrganizationListRecord(List.of(
-                new Organization("Java Online Projects",
+                new Organization("Java Online Projects", "javaops.ru",
                         LocalDate.of(2013, 10, 1),
                         LocalDate.now(),
                         "Автор проекта",
                         "Создание, организация и проведение Java онлайн проектов и стажировок"),
-                new Organization("Wrike",
+                new Organization("Wrike", "www.wrike.com",
                         LocalDate.of(2014, 10, 1),
                         LocalDate.of(2016, 01, 01),
                         "Старший разработчик (backend)",

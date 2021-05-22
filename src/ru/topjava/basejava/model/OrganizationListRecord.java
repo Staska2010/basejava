@@ -1,12 +1,17 @@
 package ru.topjava.basejava.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class OrganizationListRecord extends AbstractRecord {
     private final List<Organization> organizations;
 
     public OrganizationListRecord(List<Organization> records) {
-        organizations = records;
+        organizations = Objects.requireNonNull(records, "Empty organization list");
+    }
+
+    public List<Organization> getOrganizations() {
+        return organizations;
     }
 
     @Override
