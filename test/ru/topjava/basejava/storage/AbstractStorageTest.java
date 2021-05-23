@@ -3,6 +3,7 @@ package ru.topjava.basejava.storage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ru.topjava.basejava.ResumeTestData;
 import ru.topjava.basejava.exception.NotExistsStorageException;
 import ru.topjava.basejava.model.Resume;
 
@@ -25,7 +26,7 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_4;
 
     static {
-        RESUME_1 = new Resume(UUID_1, "1");
+        RESUME_1 = ResumeTestData.makeTestResume(UUID_1, "1");
         RESUME_2 = new Resume(UUID_2, "2");
         RESUME_3 = new Resume(UUID_3, "3");
         RESUME_4 = new Resume(UUID_4, "4");

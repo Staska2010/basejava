@@ -6,15 +6,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class ResumeTestData {
-    private static Resume testResume;
-
-    public static void main(String[] args) {
-        testResume = makeTestResume();
-        printData(testResume);
-    }
-
-    private static Resume makeTestResume() {
-        Resume testResume = new Resume("Григорий Кислин");
+    public static Resume makeTestResume(String uuid, String fullName) {
+        Resume testResume = new Resume(uuid, fullName);
         testResume.setContact(ContactType.EMAIL, "gkislin@yandex.ru");
         testResume.setContact(ContactType.GITHUB, "https://github.com/gkislin");
         testResume.setContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
@@ -42,17 +35,18 @@ public class ResumeTestData {
                 "Languages: Java, Scala, Python/Jython/PL-Python, JavaScript, Groovy"
         )));
         testResume.setRecord(SectionType.EXPERIENCE, new OrganizationListRecord(List.of(
-                new Organization("Java Online Projects", "javaops.ru",
-                        LocalDate.of(2013, 10, 1),
-                        LocalDate.now(),
-                        "Автор проекта",
-                        "Создание, организация и проведение Java онлайн проектов и стажировок"),
+                new Organization("Java Online Projects",
+                        "javaops.ru",
+                        List.of(new Position(LocalDate.of(2013, 10, 1),
+                                LocalDate.now(),
+                                "Автор проекта",
+                                "Создание, организация и проведение Java онлайн проектов и стажировок"))),
                 new Organization("Wrike", "www.wrike.com",
-                        LocalDate.of(2014, 10, 1),
-                        LocalDate.of(2016, 01, 01),
-                        "Старший разработчик (backend)",
-                        "Проектирование и разработка онлайн платформы управления проектами Wrike " +
-                                "(Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis).")
+                        List.of(new Position(LocalDate.of(2014, 10, 1),
+                                LocalDate.of(2016, 01, 01),
+                                "Старший разработчик (backend)",
+                                "Проектирование и разработка онлайн платформы управления проектами Wrike " +
+                                        "(Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis).")))
         )));
         return testResume;
     }
