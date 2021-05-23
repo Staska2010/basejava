@@ -25,7 +25,7 @@ public class MainDate {
         ZoneId zone2 = ZoneId.of("Africa/Monrovia");
         System.out.println(zone1.getRules());
         System.out.println(zone2.getRules());
-     //   System.out.println(LocalTime.MAX);
+        //   System.out.println(LocalTime.MAX);
         LocalTime now1 = LocalTime.now(zone1);
         LocalTime now2 = LocalTime.now(zone2);
         System.out.println(now1.isBefore(now2));
