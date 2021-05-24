@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class ResumeTestData {
-    public static Resume makeTestResume(String uuid, String fullName) {
+    public static Resume fillResume(String uuid, String fullName) {
         Resume testResume = new Resume(uuid, fullName);
         testResume.setContact(ContactType.EMAIL, "gkislin@yandex.ru");
         testResume.setContact(ContactType.GITHUB, "https://github.com/gkislin");

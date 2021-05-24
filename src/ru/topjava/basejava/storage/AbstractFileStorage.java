@@ -54,7 +54,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected void updateResume(Resume r, File file) {
-        try{
+        try {
             file.delete();
             file.createNewFile();
             writeToFile(file, r);
@@ -67,7 +67,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected List<Resume> getAll() {
         List<Resume> result = new LinkedList<>();
-        for(File next : Objects.requireNonNull(dir.listFiles())) {
+        for (File next : Objects.requireNonNull(dir.listFiles())) {
             result.add(readFromFile(next));
         }
         return result;
@@ -75,7 +75,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        for(File next : Objects.requireNonNull(dir.listFiles())) {
+        for (File next : Objects.requireNonNull(dir.listFiles())) {
             next.delete();
         }
     }
