@@ -1,4 +1,6 @@
 package ru.topjava.basejava.model;
 
-public abstract class AbstractRecord {
+import java.io.Serializable;
+
+public abstract class AbstractRecord implements Serializable {
 }

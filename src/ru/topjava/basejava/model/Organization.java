@@ -1,8 +1,9 @@
 package ru.topjava.basejava.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Organization {
+public class Organization implements Serializable {
     private final Link homePage;
     private final List<Position> positions;
 

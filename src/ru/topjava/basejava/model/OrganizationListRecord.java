@@ -1,9 +1,12 @@
 package ru.topjava.basejava.model;
 
+import java.io.Serial;
 import java.util.List;
 import java.util.Objects;
 
 public class OrganizationListRecord extends AbstractRecord {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private final List<Organization> organizations;
 
     public OrganizationListRecord(List<Organization> records) {
@@ -21,5 +24,18 @@ public class OrganizationListRecord extends AbstractRecord {
             sb.append(" + ").append(record).append(System.lineSeparator());
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrganizationListRecord that = (OrganizationListRecord) o;
+        return organizations.equals(that.organizations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(organizations);
     }
 }

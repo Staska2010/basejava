@@ -7,14 +7,14 @@ import ru.topjava.basejava.ResumeTestData;
 import ru.topjava.basejava.exception.NotExistsStorageException;
 import ru.topjava.basejava.model.Resume;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 public abstract class AbstractStorageTest {
-
+    protected final static File STORAGE_DIR = new File("C:\\Users\\user\\Documents\\basejava\\storage");
     protected IStorage storage;
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
@@ -55,7 +55,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void ifGetExistedResumeThenInstancesAreCorrect() {
-        assertSame(RESUME_1, storage.get(UUID_1));
+        assertEquals(RESUME_1, storage.get(UUID_1));
     }
 
     @Test(expected = NotExistsStorageException.class)
@@ -86,6 +86,8 @@ public abstract class AbstractStorageTest {
     public void ifCorrectlySavedThenResumeIsInStorage() {
         storage.save(RESUME_4);
         assertEquals(4, storage.size());
+        System.out.println(RESUME_4);
+        System.out.println(storage.get(UUID_4));
         assertEquals(RESUME_4, storage.get(UUID_4));
     }
 
@@ -104,6 +106,8 @@ public abstract class AbstractStorageTest {
     @Test
     public void ifUpdateExistingResumeThenTrue() {
         storage.update(RESUME_3);
+        System.out.println(RESUME_3);
+        System.out.println(storage.get(UUID_3));
         assertEquals(RESUME_3, storage.get(UUID_3));
     }
 

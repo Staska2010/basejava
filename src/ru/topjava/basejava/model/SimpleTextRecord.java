@@ -1,8 +1,11 @@
 package ru.topjava.basejava.model;
 
+import java.io.Serial;
 import java.util.Objects;
 
 public class SimpleTextRecord extends AbstractRecord {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private final String simpleText;
 
     public SimpleTextRecord(String simpleText) {
@@ -24,6 +27,6 @@ public class SimpleTextRecord extends AbstractRecord {
 
     @Override
     public int hashCode() {
-        return simpleText != null? simpleText.hashCode() : 0;
+        return simpleText.hashCode();
     }
 }

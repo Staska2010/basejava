@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class BulletedListRecord extends AbstractRecord {
+    private static final long serialVersionUID = 1L;
     private final List<String> bulletedRecords;
 
     public BulletedListRecord(List<String> records) {
@@ -35,6 +36,6 @@ public class BulletedListRecord extends AbstractRecord {
 
     @Override
     public int hashCode() {
-        return bulletedRecords != null ? bulletedRecords.hashCode() : 0;
+        return bulletedRecords.hashCode();
     }
 }

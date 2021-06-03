@@ -1,5 +1,7 @@
 package ru.topjava.basejava.model;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
@@ -8,8 +10,9 @@ import java.util.UUID;
 /**
  * Initial resume class
  */
-public class Resume implements Comparable<Resume> {
-
+public class Resume implements Comparable<Resume>, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     // Unique identifier
     private final String uuid;
     private final String fullName;
@@ -52,18 +55,20 @@ public class Resume implements Comparable<Resume> {
 
     @Override
     public String toString() {
-        return uuid + ": " + fullName;
+        return uuid + ": " + fullName + System.lineSeparator()
+                + contacts.toString() + System.lineSeparator()
+                + records.toString();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Resume)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Resume resume = (Resume) o;
-        return uuid.equals(resume.uuid)
-                && fullName.equals(resume.fullName)
-                && Objects.equals(this.contacts, resume.contacts)
-                && Objects.equals(this.records, resume.records);
+        return Objects.equals(uuid, resume.uuid) &&
+                Objects.equals(fullName, resume.fullName) &&
+                Objects.equals(contacts, resume.contacts) &&
+                Objects.equals(records, resume.records);
     }
 
     /**
@@ -73,11 +78,7 @@ public class Resume implements Comparable<Resume> {
      */
     @Override
     public int hashCode() {
-        int result = uuid.hashCode();
-        result = 31 * result + fullName.hashCode();
-        result = 31 * result + Objects.hashCode(contacts);
-        result = 31 * result + Objects.hashCode(records);
-        return result;
+        return Objects.hash(uuid, fullName, contacts, records);
     }
 
     /**

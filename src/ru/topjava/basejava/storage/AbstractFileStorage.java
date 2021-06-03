@@ -3,8 +3,7 @@ package ru.topjava.basejava.storage;
 import ru.topjava.basejava.exception.StorageException;
 import ru.topjava.basejava.model.Resume;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +35,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void saveResume(Resume r, File file) {
         try {
             file.createNewFile();
-            writeToFile(file, r);
+            writeToFile(new BufferedOutputStream(new FileOutputStream(file)), r);
         } catch (IOException exc) {
             throw new StorageException("IO error", file.getName(), exc);
         }
@@ -44,7 +43,11 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected Resume getResume(File file) {
-        return readFromFile(file);
+        try {
+            return readFromFile(new BufferedInputStream(new FileInputStream(file)));
+        } catch (IOException exc) {
+            throw new StorageException("File read error", file.getName(), exc);
+        }
     }
 
     @Override
@@ -57,18 +60,21 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         try {
             file.delete();
             file.createNewFile();
-            writeToFile(file, r);
+            writeToFile(new BufferedOutputStream(new FileOutputStream(file)), r);
         } catch (IOException exc) {
             throw new StorageException("IO error", file.getName(), exc);
         }
-
     }
 
     @Override
     protected List<Resume> getAll() {
         List<Resume> result = new LinkedList<>();
         for (File next : Objects.requireNonNull(dir.listFiles())) {
-            result.add(readFromFile(next));
+            try {
+                result.add(readFromFile(new BufferedInputStream(new FileInputStream(next))));
+            } catch (IOException exc) {
+                throw new StorageException("IO error", next.getName(), exc);
+            }
         }
         return result;
     }
@@ -85,7 +91,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         return Objects.requireNonNull(dir.listFiles()).length;
     }
 
-    protected abstract void writeToFile(File file, Resume resume) throws IOException;
+    protected abstract void writeToFile(OutputStream os, Resume resume) throws IOException;
 
-    protected abstract Resume readFromFile(File file);
+    protected abstract Resume readFromFile(InputStream is) throws IOException;
 }
