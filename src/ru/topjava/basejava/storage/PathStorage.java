@@ -2,9 +2,11 @@ package ru.topjava.basejava.storage;
 
 import ru.topjava.basejava.exception.StorageException;
 import ru.topjava.basejava.model.Resume;
-import ru.topjava.basejava.storage.utils.ObjectSaver;
+import ru.topjava.basejava.storage.strategy.Serializer;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,9 +17,9 @@ import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
     private final Path dir;
-    protected ObjectSaver saver;
+    protected Serializer saver;
 
-    protected PathStorage(String dir, ObjectSaver saver) {
+    protected PathStorage(String dir, Serializer saver) {
         Path directory = Paths.get(dir);
         this.dir = Objects.requireNonNull(directory, "Directory must not be null");
         if (!Files.isDirectory(directory)) {
@@ -36,23 +38,23 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected Path getIndex(String uuid) {
-        return Path.of(dir.toString(), uuid);
+        return dir.resolve(uuid);
     }
 
     @Override
     protected void saveResume(Resume r, Path path) {
         try {
             Files.createFile(path);
-            writeToFile(new BufferedOutputStream(Files.newOutputStream(path)), r);
         } catch (IOException exc) {
             throw new StorageException("IO error", path.toString(), exc);
         }
+        updateResume(r, path);
     }
 
     @Override
     protected Resume getResume(Path path) {
         try {
-            return readFromFile(new BufferedInputStream(Files.newInputStream(path)));
+            return saver.readObject(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException exc) {
             throw new StorageException("File read error", path.toString(), exc);
         }
@@ -70,9 +72,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected void updateResume(Resume r, Path path) {
         try {
-            Files.delete(path);
-            Files.createFile(path);
-            writeToFile(new BufferedOutputStream(Files.newOutputStream(path)), r);
+            saver.writeObject(r, new BufferedOutputStream(Files.newOutputStream(path)));
         } catch (IOException exc) {
             throw new StorageException("IO error", path.toString(), exc);
         }
@@ -85,7 +85,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     public void clear() {
-        getListOfFiles(dir).forEach(this::deleteFile);
+        getListOfFiles(dir).forEach(this::deleteResume);
     }
 
     @Override
@@ -99,21 +99,5 @@ public class PathStorage extends AbstractStorage<Path> {
         } catch (IOException exc) {
             throw new StorageException("IO error while retrieving list of files", null, exc);
         }
-    }
-
-    private void deleteFile(Path path) {
-        try {
-            Files.delete(path);
-        } catch (IOException exc) {
-            throw new StorageException("IO error while delete file", null, exc);
-        }
-    }
-
-    protected void writeToFile(OutputStream os, Resume resume) throws IOException {
-        saver.writeObject(resume, os);
-    }
-
-    protected Resume readFromFile(InputStream is) throws IOException {
-        return saver.readObject(is);
     }
 }

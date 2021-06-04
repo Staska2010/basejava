@@ -1,29 +1,26 @@
-package ru.topjava.basejava.storage.utils;
+package ru.topjava.basejava.storage.strategy;
 
 import ru.topjava.basejava.exception.StorageException;
 import ru.topjava.basejava.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamSaver implements ObjectSaver {
+public class ObjectStreamSerializer implements Serializer {
 
     @Override
     public void writeObject(Resume r, OutputStream destination) throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(destination);
-        oos.writeObject(r);
-        oos.close();
+        try(ObjectOutputStream oos = new ObjectOutputStream(destination)) {
+            oos.writeObject(r);
+        }
     }
 
     @Override
     public Resume readObject(InputStream resource) throws IOException {
-        ObjectInputStream ois = new ObjectInputStream(resource);
         Resume result;
-        try {
-            result = (Resume) ois.readObject();
+        try(ObjectInputStream ois = new ObjectInputStream(resource)) {
+            return (Resume) ois.readObject();
         } catch (ClassNotFoundException exc) {
             throw new StorageException("Resume class was not found in ClassPath", null, exc);
         }
-        ois.close();
-        return result;
     }
 }

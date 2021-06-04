@@ -2,7 +2,7 @@ package ru.topjava.basejava.storage;
 
 import ru.topjava.basejava.exception.StorageException;
 import ru.topjava.basejava.model.Resume;
-import ru.topjava.basejava.storage.utils.ObjectSaver;
+import ru.topjava.basejava.storage.strategy.Serializer;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -11,9 +11,9 @@ import java.util.Objects;
 
 public class FileStorage extends AbstractStorage<File> {
     private final File dir;
-    protected final ObjectSaver saver;
+    protected final Serializer saver;
 
-    protected FileStorage(File dir, ObjectSaver saver) {
+    protected FileStorage(File dir, Serializer saver) {
         this.dir = Objects.requireNonNull(dir, "Directory must not be null");
         if (!dir.isDirectory()) {
             throw new IllegalArgumentException(dir.getAbsolutePath() + " is not a directory!");
@@ -38,16 +38,16 @@ public class FileStorage extends AbstractStorage<File> {
     protected void saveResume(Resume r, File file) {
         try {
             file.createNewFile();
-            writeToFile(new BufferedOutputStream(new FileOutputStream(file)), r);
         } catch (IOException exc) {
             throw new StorageException("IO error", file.getName(), exc);
         }
+        updateResume(r, file);
     }
 
     @Override
     protected Resume getResume(File file) {
         try {
-            return readFromFile(new BufferedInputStream(new FileInputStream(file)));
+            return saver.readObject(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException exc) {
             throw new StorageException("File read error", file.getName(), exc);
         }
@@ -55,15 +55,15 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     protected void deleteResume(File file) {
-        file.delete();
+        if (!file.delete()) {
+            throw new StorageException("Error deleting a file", "");
+        }
     }
 
     @Override
     protected void updateResume(Resume r, File file) {
         try {
-            file.delete();
-            file.createNewFile();
-            writeToFile(new BufferedOutputStream(new FileOutputStream(file)), r);
+            saver.writeObject(r, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException exc) {
             throw new StorageException("IO error", file.getName(), exc);
         }
@@ -72,33 +72,28 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected List<Resume> getAll() {
         List<Resume> result = new LinkedList<>();
-        for (File next : Objects.requireNonNull(dir.listFiles())) {
-            try {
-                result.add(readFromFile(new BufferedInputStream(new FileInputStream(next))));
-            } catch (IOException exc) {
-                throw new StorageException("IO error", next.getName(), exc);
-            }
+        for (File next : getFileList()) {
+            result.add(getResume(next));
         }
         return result;
     }
 
     @Override
     public void clear() {
-        for (File next : Objects.requireNonNull(dir.listFiles())) {
+        for (File next : getFileList()) {
             next.delete();
         }
     }
 
     @Override
     public int size() {
-        return Objects.requireNonNull(dir.listFiles()).length;
+        return getFileList().length;
     }
 
-    protected void writeToFile(OutputStream os, Resume resume) throws IOException {
-        saver.writeObject(resume, os);
-    }
-
-    protected Resume readFromFile(InputStream is) throws IOException {
-        return saver.readObject(is);
+    private File[] getFileList() {
+        if (dir.listFiles() != null) {
+            return dir.listFiles();
+        }
+        throw new StorageException("Directory access error", "");
     }
 }
