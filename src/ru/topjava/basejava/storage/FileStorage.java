@@ -9,11 +9,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public class FileStorage extends AbstractStorage<File> {
     private final File dir;
-    protected final ObjectSaver<OutputStream, InputStream> saver;
+    protected final ObjectSaver saver;
 
-    protected AbstractFileStorage(File dir, ObjectSaver<OutputStream, InputStream> saver) {
+    protected FileStorage(File dir, ObjectSaver saver) {
         this.dir = Objects.requireNonNull(dir, "Directory must not be null");
         if (!dir.isDirectory()) {
             throw new IllegalArgumentException(dir.getAbsolutePath() + " is not a directory!");
@@ -94,7 +94,11 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         return Objects.requireNonNull(dir.listFiles()).length;
     }
 
-    protected abstract void writeToFile(OutputStream os, Resume resume) throws IOException;
+    protected void writeToFile(OutputStream os, Resume resume) throws IOException {
+        saver.writeObject(resume, os);
+    }
 
-    protected abstract Resume readFromFile(InputStream is) throws IOException;
+    protected Resume readFromFile(InputStream is) throws IOException {
+        return saver.readObject(is);
+    }
 }

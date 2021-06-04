@@ -13,11 +13,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> {
+public class PathStorage extends AbstractStorage<Path> {
     private final Path dir;
-    protected ObjectSaver<OutputStream, InputStream> saver;
+    protected ObjectSaver saver;
 
-    protected AbstractPathStorage(String dir, ObjectSaver<OutputStream, InputStream> saver) {
+    protected PathStorage(String dir, ObjectSaver saver) {
         Path directory = Paths.get(dir);
         this.dir = Objects.requireNonNull(directory, "Directory must not be null");
         if (!Files.isDirectory(directory)) {
@@ -109,7 +109,11 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         }
     }
 
-    protected abstract void writeToFile(OutputStream os, Resume resume) throws IOException;
+    protected void writeToFile(OutputStream os, Resume resume) throws IOException {
+        saver.writeObject(resume, os);
+    }
 
-    protected abstract Resume readFromFile(InputStream is) throws IOException;
+    protected Resume readFromFile(InputStream is) throws IOException {
+        return saver.readObject(is);
+    }
 }

@@ -37,12 +37,12 @@ public class ResumeTestData {
         testResume.setRecord(SectionType.EXPERIENCE, new OrganizationListRecord(List.of(
                 new Organization("Java Online Projects",
                         "javaops.ru",
-                        List.of(new Position(LocalDate.of(2013, 10, 1),
+                        List.of(new Organization.Position(LocalDate.of(2013, 10, 1),
                                 LocalDate.now(),
                                 "Автор проекта",
                                 "Создание, организация и проведение Java онлайн проектов и стажировок"))),
                 new Organization("Wrike", "www.wrike.com",
-                        List.of(new Position(LocalDate.of(2014, 10, 1),
+                        List.of(new Organization.Position(LocalDate.of(2014, 10, 1),
                                 LocalDate.of(2016, 01, 01),
                                 "Старший разработчик (backend)",
                                 "Проектирование и разработка онлайн платформы управления проектами Wrike " +

@@ -1,10 +1,11 @@
 package ru.topjava.basejava.storage.utils;
 
+import ru.topjava.basejava.exception.StorageException;
 import ru.topjava.basejava.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamSaver implements ObjectSaver<OutputStream, InputStream> {
+public class ObjectStreamSaver implements ObjectSaver {
 
     @Override
     public void writeObject(Resume r, OutputStream destination) throws IOException {
@@ -14,9 +15,14 @@ public class ObjectStreamSaver implements ObjectSaver<OutputStream, InputStream>
     }
 
     @Override
-    public Resume readObject(InputStream resource) throws IOException, ClassNotFoundException {
+    public Resume readObject(InputStream resource) throws IOException {
         ObjectInputStream ois = new ObjectInputStream(resource);
-        Resume result = (Resume) ois.readObject();
+        Resume result;
+        try {
+            result = (Resume) ois.readObject();
+        } catch (ClassNotFoundException exc) {
+            throw new StorageException("Resume class was not found in ClassPath", null, exc);
+        }
         ois.close();
         return result;
     }
