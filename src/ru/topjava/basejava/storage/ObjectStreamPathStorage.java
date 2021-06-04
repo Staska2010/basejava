@@ -1,14 +1,17 @@
 package ru.topjava.basejava.storage;
 
+import ru.topjava.basejava.exception.StorageException;
 import ru.topjava.basejava.model.Resume;
 import ru.topjava.basejava.storage.utils.ObjectSaver;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
 
-public class ObjectStreamStorage extends AbstractFileStorage {
-
-    public ObjectStreamStorage(File dir, ObjectSaver<OutputStream, InputStream> saver) {
-        super(dir, saver);
+public class ObjectStreamPathStorage extends AbstractPathStorage {
+    protected ObjectStreamPathStorage(Path dir, ObjectSaver<OutputStream, InputStream> saver) {
+        super(dir.toString(), saver);
     }
 
     @Override
@@ -21,7 +24,7 @@ public class ObjectStreamStorage extends AbstractFileStorage {
         try {
             return saver.readObject(is);
         } catch (ClassNotFoundException exc) {
-            throw new NotSerializableException("Resume class was not found in ClassPath");
+            throw new StorageException("Resume class was not found in ClassPath", null, exc);
         }
     }
 }

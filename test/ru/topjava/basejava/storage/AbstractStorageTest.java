@@ -1,6 +1,5 @@
 package ru.topjava.basejava.storage;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import ru.topjava.basejava.ResumeTestData;
@@ -38,14 +37,10 @@ public abstract class AbstractStorageTest {
 
     @Before
     public void setUp() {
+        storage.clear();
         storage.save(RESUME_2);
         storage.save(RESUME_1);
         storage.save(RESUME_3);
-    }
-
-    @After
-    public void tearDown() {
-        storage.clear();
     }
 
     @Test
@@ -86,8 +81,6 @@ public abstract class AbstractStorageTest {
     public void ifCorrectlySavedThenResumeIsInStorage() {
         storage.save(RESUME_4);
         assertEquals(4, storage.size());
-        System.out.println(RESUME_4);
-        System.out.println(storage.get(UUID_4));
         assertEquals(RESUME_4, storage.get(UUID_4));
     }
 

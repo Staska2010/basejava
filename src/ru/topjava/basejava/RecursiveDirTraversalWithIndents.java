@@ -13,8 +13,8 @@ public class RecursiveDirTraversalWithIndents {
         File[] files = directory.listFiles();
         if (files != null) {
             for (File next : files) {
-                if(next.isDirectory()) {
-                    System.out.println("\t".repeat(level) + next.getName());
+                if (next.isDirectory()) {
+                    System.out.println("\t".repeat(level) + "-" + next.getName());
                     listFiles(next, level + 1);
                 } else {
                     System.out.println("\t".repeat(level) + next.getName());

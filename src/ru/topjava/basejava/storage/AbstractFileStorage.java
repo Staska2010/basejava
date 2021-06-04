@@ -2,6 +2,7 @@ package ru.topjava.basejava.storage;
 
 import ru.topjava.basejava.exception.StorageException;
 import ru.topjava.basejava.model.Resume;
+import ru.topjava.basejava.storage.utils.ObjectSaver;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -9,9 +10,10 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class AbstractFileStorage extends AbstractStorage<File> {
-    private File dir;
+    private final File dir;
+    protected final ObjectSaver<OutputStream, InputStream> saver;
 
-    protected AbstractFileStorage(File dir) {
+    protected AbstractFileStorage(File dir, ObjectSaver<OutputStream, InputStream> saver) {
         this.dir = Objects.requireNonNull(dir, "Directory must not be null");
         if (!dir.isDirectory()) {
             throw new IllegalArgumentException(dir.getAbsolutePath() + " is not a directory!");
@@ -19,6 +21,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         if (!dir.canRead() || !dir.canWrite()) {
             throw new IllegalArgumentException(dir.getAbsolutePath() + " is not readable/writable!");
         }
+        this.saver = saver;
     }
 
     @Override

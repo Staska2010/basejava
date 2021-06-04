@@ -1,9 +1,7 @@
 package ru.topjava.basejava;
 
 import ru.topjava.basejava.model.*;
-import ru.topjava.basejava.storage.ObjectStreamStorage;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -65,17 +63,5 @@ public class ResumeTestData {
 
     private static void outputRecords(Resume testResume) {
         testResume.getRecords().forEach((key, value) -> System.out.println(key.getTitle() + System.lineSeparator() + value));
-    }
-
-    public static void main(String[] args) {
-        Resume resume1 = fillResume("UUID1", "Name1");
-        System.out.println(resume1);
-        ObjectStreamStorage oss = new ObjectStreamStorage(new File("C:\\Users\\user\\Documents\\basejava\\storage"));
-        oss.save(resume1);
-        Resume resume2 = oss.get(resume1.getUuid());
-     //   System.out.println(resume2);
-        System.out.println(resume2.getRecords());
-
-        System.out.println(resume2.equals(resume1));
     }
 }
