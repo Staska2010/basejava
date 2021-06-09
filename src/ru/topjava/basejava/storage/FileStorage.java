@@ -5,7 +5,8 @@ import ru.topjava.basejava.model.Resume;
 import ru.topjava.basejava.storage.strategy.Serializer;
 
 import java.io.*;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,7 +72,7 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     protected List<Resume> getAll() {
-        List<Resume> result = new LinkedList<>();
+        List<Resume> result = new ArrayList<>();
         for (File next : getFileList()) {
             result.add(getResume(next));
         }
@@ -80,9 +81,7 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        for (File next : getFileList()) {
-            next.delete();
-        }
+        Arrays.stream(getFileList()).forEach(this::deleteResume);
     }
 
     @Override

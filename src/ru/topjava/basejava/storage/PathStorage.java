@@ -80,22 +80,22 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected List<Resume> getAll() {
-        return getListOfFiles(dir).map(this::getResume).collect(Collectors.toList());
+        return getListOfFiles().map(this::getResume).collect(Collectors.toList());
     }
 
     @Override
     public void clear() {
-        getListOfFiles(dir).forEach(this::deleteResume);
+        getListOfFiles().forEach(this::deleteResume);
     }
 
     @Override
     public int size() {
-        return (int) getListOfFiles(dir).count();
+        return (int) getListOfFiles().count();
     }
 
-    private Stream<Path> getListOfFiles(Path directory) {
+    private Stream<Path> getListOfFiles() {
         try {
-            return Files.list(directory);
+            return Files.list(dir);
         } catch (IOException exc) {
             throw new StorageException("IO error while retrieving list of files", null, exc);
         }

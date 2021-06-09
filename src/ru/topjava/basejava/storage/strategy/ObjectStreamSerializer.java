@@ -16,7 +16,6 @@ public class ObjectStreamSerializer implements Serializer {
 
     @Override
     public Resume readObject(InputStream resource) throws IOException {
-        Resume result;
         try(ObjectInputStream ois = new ObjectInputStream(resource)) {
             return (Resume) ois.readObject();
         } catch (ClassNotFoundException exc) {
