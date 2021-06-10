@@ -21,7 +21,7 @@ public class ReflectionTest {
                 break;
             }
         }
-        System.out.println(Class.forName("ru.topjava.basejava.ReflectionTest").getPackageName());
+        System.out.println(Class.forName("ru.topjava.basejava.ReflectionTest").getPackage());
     }
 
     @init(next = 1)

@@ -6,18 +6,18 @@ public class RecursiveDirTraversalWithIndents {
     public static void main(String[] args) {
         String path = "./src";
         File directory = new File(path);
-        listFiles(directory, 0);
+        listFiles(directory, "");
     }
 
-    private static void listFiles(File directory, int level) {
+    private static void listFiles(File directory, String level) {
         File[] files = directory.listFiles();
         if (files != null) {
             for (File next : files) {
                 if (next.isDirectory()) {
-                    System.out.println("\t".repeat(level) + "-" + next.getName());
-                    listFiles(next, level + 1);
+                    System.out.println(level + "-" + next.getName());
+                    listFiles(next, level + "\t");
                 } else {
-                    System.out.println("\t".repeat(level) + next.getName());
+                    System.out.println(level + next.getName());
                 }
             }
         }
