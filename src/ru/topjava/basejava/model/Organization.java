@@ -1,13 +1,22 @@
 package ru.topjava.basejava.model;
 
+import ru.topjava.basejava.util.LocalDateAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
-    private final Link homePage;
-    private final List<Position> positions;
+    private Link homePage;
+    private List<Position> positions;
+
+    public Organization() {
+    }
 
     public Organization(String name, String url, List<Position> positions) {
         this.homePage = new Link(name, url);
@@ -42,11 +51,17 @@ public class Organization implements Serializable {
         return sb.toString();
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class Position implements Serializable {
-        private final LocalDate dateStart;
-        private final LocalDate dateEnd;
-        private final String position;
-        private final String jobDesc;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate dateStart;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate dateEnd;
+        private String position;
+        private String jobDesc;
+
+        public Position() {
+        }
 
         public Position(LocalDate dateStart, LocalDate dateEnd, String position, String jobDesc) {
             this.dateStart = Objects.requireNonNull(dateStart);

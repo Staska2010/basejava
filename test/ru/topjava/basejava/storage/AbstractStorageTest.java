@@ -99,8 +99,6 @@ public abstract class AbstractStorageTest {
     @Test
     public void ifUpdateExistingResumeThenTrue() {
         storage.update(RESUME_3);
-        System.out.println(RESUME_3);
-        System.out.println(storage.get(UUID_3));
         assertEquals(RESUME_3, storage.get(UUID_3));
     }
 

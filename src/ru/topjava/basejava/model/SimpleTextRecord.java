@@ -4,7 +4,10 @@ import java.util.Objects;
 
 public class SimpleTextRecord extends AbstractRecord {
     private static final long serialVersionUID = 1L;
-    private final String simpleText;
+    private String simpleText;
+
+    public SimpleTextRecord() {
+    }
 
     public SimpleTextRecord(String simpleText) {
         this.simpleText = Objects.requireNonNull(simpleText, "Text record is null");

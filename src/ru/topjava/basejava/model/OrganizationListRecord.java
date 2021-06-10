@@ -5,7 +5,10 @@ import java.util.Objects;
 
 public class OrganizationListRecord extends AbstractRecord {
     private static final long serialVersionUID = 1L;
-    private final List<Organization> organizations;
+    private List<Organization> organizations;
+
+    public OrganizationListRecord() {
+    }
 
     public OrganizationListRecord(List<Organization> records) {
         organizations = Objects.requireNonNull(records, "Empty organization list");

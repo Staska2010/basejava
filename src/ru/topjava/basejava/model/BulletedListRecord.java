@@ -5,7 +5,10 @@ import java.util.Objects;
 
 public class BulletedListRecord extends AbstractRecord {
     private static final long serialVersionUID = 1L;
-    private final List<String> bulletedRecords;
+    private List<String> bulletedRecords;
+
+    public BulletedListRecord() {
+    }
 
     public BulletedListRecord(List<String> records) {
         bulletedRecords = Objects.requireNonNull(records, "Bulleted records list is empty");
