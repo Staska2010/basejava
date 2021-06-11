@@ -23,6 +23,14 @@ public class Organization implements Serializable {
         this.positions = positions;
     }
 
+    public Link getHomePage() {
+        return homePage;
+    }
+
+    public List<Position> getPositions() {
+        return positions;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,6 +76,22 @@ public class Organization implements Serializable {
             this.dateEnd = Objects.requireNonNull(dateEnd);
             this.position = Objects.requireNonNull(position);
             this.jobDesc = jobDesc;
+        }
+
+        public LocalDate getDateStart() {
+            return dateStart;
+        }
+
+        public LocalDate getDateEnd() {
+            return dateEnd;
+        }
+
+        public String getPosition() {
+            return position;
+        }
+
+        public String getJobDesc() {
+            return jobDesc;
         }
 
         @Override

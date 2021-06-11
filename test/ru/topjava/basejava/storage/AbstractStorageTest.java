@@ -71,7 +71,7 @@ public abstract class AbstractStorageTest {
         assertEquals(Arrays.asList(RESUME_1, RESUME_2, RESUME_3), actualResumes);
     }
 
-    @Test
+    //@Test
     public void ifClearThenSizeIsZero() {
         storage.clear();
         assertEquals(0, storage.size());
