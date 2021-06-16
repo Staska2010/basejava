@@ -18,6 +18,10 @@ public class SimpleTextRecord extends AbstractRecord {
         return simpleText;
     }
 
+    public String getSimpleText() {
+        return simpleText;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

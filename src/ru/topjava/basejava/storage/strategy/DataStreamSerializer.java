@@ -4,6 +4,7 @@ import ru.topjava.basejava.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,22 +16,22 @@ public class DataStreamSerializer implements Serializer {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
             dos.writeInt(r.getContacts().size());
-            for (Map.Entry<ContactType, String> next : r.getContacts().entrySet()) {
-                dos.writeUTF(next.getKey().name());
-                dos.writeUTF(next.getValue());
+            for (Map.Entry<ContactType, String> nextContact : r.getContacts().entrySet()) {
+                dos.writeUTF(nextContact.getKey().name());
+                dos.writeUTF(nextContact.getValue());
             }
             dos.writeInt(r.getRecords().size());
-            for (Map.Entry<SectionType, AbstractRecord> next : r.getRecords().entrySet()) {
-                dos.writeUTF(next.getKey().name());
-                switch (next.getKey()) {
+            for (Map.Entry<SectionType, AbstractRecord> nextRecord : r.getRecords().entrySet()) {
+                dos.writeUTF(nextRecord.getKey().name());
+                switch (nextRecord.getKey()) {
                     case PERSONAL:
                     case OBJECTIVES: {
-                        dos.writeUTF(next.getValue().toString());
+                        dos.writeUTF(((SimpleTextRecord) nextRecord.getValue()).getSimpleText());
                         break;
                     }
                     case ACHIEVEMENTS:
                     case QUALIFICATIONS: {
-                        List<String> list = ((BulletedListRecord) next.getValue()).getBulletedRecords();
+                        List<String> list = ((BulletedListRecord) nextRecord.getValue()).getBulletedRecords();
                         dos.writeInt(list.size());
                         for (String listRecord : list) {
                             dos.writeUTF(listRecord);
@@ -39,18 +40,21 @@ public class DataStreamSerializer implements Serializer {
                     }
                     case EXPERIENCE:
                     case EDUCATION: {
-                        List<Organization> list = ((OrganizationListRecord) next.getValue()).getOrganizations();
+                        List<Organization> list = ((OrganizationListRecord) nextRecord.getValue()).getOrganizations();
                         dos.writeInt(list.size());
                         for (Organization nextOrg : list) {
-                            dos.writeUTF(nextOrg.getHomePage().getName());
-                            dos.writeUTF(nextOrg.getHomePage().getUrl());
+                            Link homePage = nextOrg.getHomePage();
+                            dos.writeUTF(homePage.getName());
+                            String url = homePage.getUrl();
+                            dos.writeUTF(url != null ? url : "");
                             List<Organization.Position> positions = nextOrg.getPositions();
                             dos.writeInt(positions.size());
                             for (Organization.Position position : positions) {
-                                dos.writeUTF(position.getDateStart().toString());
-                                dos.writeUTF(position.getDateEnd().toString());
+                                dos.writeUTF(dateFormat(position.getDateStart()));
+                                dos.writeUTF(dateFormat(position.getDateEnd()));
                                 dos.writeUTF(position.getPosition());
-                                dos.writeUTF(position.getJobDesc());
+                                String jobDesc = position.getJobDesc();
+                                dos.writeUTF(jobDesc != null ? jobDesc : "");
                             }
                         }
                         break;
@@ -94,14 +98,18 @@ public class DataStreamSerializer implements Serializer {
                         for (int j = 0; j < innerSize; j++) {
                             String name = dis.readUTF();
                             String url = dis.readUTF();
+                            if (url.equals("")) {
+                                url = null;
+                            }
                             int sizePositions = dis.readInt();
                             List<Organization.Position> positions = new ArrayList<>();
                             for (int k = 0; k < sizePositions; k++) {
+                                String jobDesc;
                                 positions.add(new Organization.Position(
-                                        LocalDate.parse(dis.readUTF()),
-                                        LocalDate.parse(dis.readUTF()),
+                                        LocalDate.parse(dis.readUTF(), DateTimeFormatter.ofPattern("yy/MM/dd")),
+                                        LocalDate.parse(dis.readUTF(), DateTimeFormatter.ofPattern("yy/MM/dd")),
                                         dis.readUTF(),
-                                        dis.readUTF()
+                                        (jobDesc = dis.readUTF()).equals("") ? null : jobDesc
                                 ));
                             }
                             organizations.add(new Organization(name, url, positions));
@@ -115,6 +123,12 @@ public class DataStreamSerializer implements Serializer {
         }
     }
 
+    private String dateFormat(LocalDate date) {
+        return date.format(DateTimeFormatter.ofPattern("yy/MM/dd"));
+    }
+
+
+//*    Alternative way through reflection/in progress/just for history *//
 //    private void getMethods(@NotNull Class aClass, DataOutputStream dos, Object resume) throws IOException {
 //        List<Method> methods = Arrays.stream(aClass.getDeclaredMethods())
 //                .filter(x -> x.getName().startsWith("get")).filter(x -> x.isAnnotationPresent(DataStream.class))
