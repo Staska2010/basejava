@@ -5,9 +5,9 @@ import ru.topjava.basejava.model.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static java.time.LocalDate.parse;
 
 public class DataStreamSerializer implements Serializer {
     @Override
@@ -15,51 +15,18 @@ public class DataStreamSerializer implements Serializer {
         try (DataOutputStream dos = new DataOutputStream(destination)) {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
-            dos.writeInt(r.getContacts().size());
-            for (Map.Entry<ContactType, String> nextContact : r.getContacts().entrySet()) {
-                dos.writeUTF(nextContact.getKey().name());
-                dos.writeUTF(nextContact.getValue());
-            }
-            dos.writeInt(r.getRecords().size());
-            for (Map.Entry<SectionType, AbstractRecord> nextRecord : r.getRecords().entrySet()) {
-                dos.writeUTF(nextRecord.getKey().name());
-                switch (nextRecord.getKey()) {
-                    case PERSONAL:
-                    case OBJECTIVES: {
-                        dos.writeUTF(((SimpleTextRecord) nextRecord.getValue()).getSimpleText());
-                        break;
-                    }
-                    case ACHIEVEMENTS:
-                    case QUALIFICATIONS: {
-                        List<String> list = ((BulletedListRecord) nextRecord.getValue()).getBulletedRecords();
-                        dos.writeInt(list.size());
-                        for (String listRecord : list) {
-                            dos.writeUTF(listRecord);
-                        }
-                        break;
-                    }
-                    case EXPERIENCE:
-                    case EDUCATION: {
-                        List<Organization> list = ((OrganizationListRecord) nextRecord.getValue()).getOrganizations();
-                        dos.writeInt(list.size());
-                        for (Organization nextOrg : list) {
-                            Link homePage = nextOrg.getHomePage();
-                            dos.writeUTF(homePage.getName());
-                            String url = homePage.getUrl();
-                            dos.writeUTF(url != null ? url : "");
-                            List<Organization.Position> positions = nextOrg.getPositions();
-                            dos.writeInt(positions.size());
-                            for (Organization.Position position : positions) {
-                                dos.writeUTF(dateFormat(position.getDateStart()));
-                                dos.writeUTF(dateFormat(position.getDateEnd()));
-                                dos.writeUTF(position.getPosition());
-                                String jobDesc = position.getJobDesc();
-                                dos.writeUTF(jobDesc != null ? jobDesc : "");
-                            }
-                        }
-                        break;
-                    }
-                }
+            Set<Map.Entry<ContactType, String>> contacts = r.getContacts().entrySet();
+            dos.writeUTF(String.valueOf(contacts.size()));
+            writeWithException(contacts, contact -> {
+                dos.writeUTF(contact.getKey().name());
+                dos.writeUTF(contact.getValue());
+            });
+            Map<SectionType, AbstractRecord> records = r.getRecords();
+            dos.writeUTF(String.valueOf(records.size()));
+            SectionIterator it = new SectionIterator(records);
+            while (it.hasNext()) {
+                List<String> nextRecord = it.next();
+                writeWithException(nextRecord, dos::writeUTF);
             }
         }
     }
@@ -68,53 +35,139 @@ public class DataStreamSerializer implements Serializer {
     public Resume readObject(InputStream resource) throws IOException {
         try (DataInputStream dis = new DataInputStream(resource)) {
             Resume result = new Resume(dis.readUTF(), dis.readUTF());
-            int sizeOfList = dis.readInt();
-            for (int i = 0; i < sizeOfList; i++) {
-                result.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
-            sizeOfList = dis.readInt();
-            for (int i = 0; i < sizeOfList; i++) {
+            readWithException(dis, () -> result.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            readWithException(dis, () -> {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
                 switch (sectionType) {
                     case PERSONAL:
-                    case OBJECTIVES: {
+                    case OBJECTIVES:
                         result.setRecord(sectionType, new SimpleTextRecord(dis.readUTF()));
-                    }
-                    break;
+                        break;
                     case ACHIEVEMENTS:
-                    case QUALIFICATIONS: {
-                        int sizeOfInnerList = dis.readInt();
-                        List<String> innerList = new ArrayList<>();
-                        for (int j = 0; j < sizeOfInnerList; j++) {
-                            innerList.add(dis.readUTF());
-                        }
-                        result.setRecord(sectionType, new BulletedListRecord(innerList));
-                    }
-                    break;
+                    case QUALIFICATIONS:
+                        result.setRecord(sectionType, new BulletedListRecord(readSection(dis, dis::readUTF)));
+                        break;
                     case EXPERIENCE:
                     case EDUCATION: {
-                        int innerSize = dis.readInt();
-                        List<Organization> organizations = new ArrayList<>();
-                        for (int j = 0; j < innerSize; j++) {
+                        result.setRecord(sectionType, new OrganizationListRecord(readSection(dis, () -> {
                             String name = dis.readUTF();
                             String url = dis.readUTF();
                             if (url.equals("")) {
                                 url = null;
                             }
-                            int sizePositions = dis.readInt();
-                            List<Organization.Position> positions = new ArrayList<>();
-                            for (int k = 0; k < sizePositions; k++) {
-                                String jobDesc;
-                                positions.add(new Organization.Position(
-                                        LocalDate.parse(dis.readUTF(), DateTimeFormatter.ofPattern("yy/MM/dd")),
-                                        LocalDate.parse(dis.readUTF(), DateTimeFormatter.ofPattern("yy/MM/dd")),
-                                        dis.readUTF(),
-                                        (jobDesc = dis.readUTF()).equals("") ? null : jobDesc
-                                ));
-                            }
-                            organizations.add(new Organization(name, url, positions));
+                            Organization next = new Organization(name, url,
+                                    readSection(dis, () -> {
+                                        String jobDesc;
+                                        return new Organization.Position(
+                                                parse(dis.readUTF(), DateTimeFormatter.ofPattern("yy/MM/dd")),
+                                                parse(dis.readUTF(), DateTimeFormatter.ofPattern("yy/MM/dd")),
+                                                dis.readUTF(),
+                                                (jobDesc = dis.readUTF()).equals("") ? null : jobDesc
+                                        );
+                                    }));
+                            return next;
+                        })));
+                    }
+                    break;
+                }
+            });
+            return result;
+        }
+    }
+
+    private interface DataWriteable<T> {
+        void handle(T record) throws IOException;
+    }
+
+    private <T> void writeWithException(Collection<T> collection, DataWriteable<T> handler) throws IOException {
+        for (T next : collection) {
+            handler.handle(next);
+        }
+    }
+
+    private interface DataReadable<T> {
+        void handle() throws IOException;
+    }
+
+    private <T> void readWithException(DataInputStream dis, DataReadable<T> handler) throws IOException {
+        int size = Integer.parseInt(dis.readUTF());
+        for (int i = 0; i < size; i++) {
+            handler.handle();
+        }
+    }
+
+    private interface Readable<T> {
+        T get() throws IOException;
+    }
+
+    private <T> List<T> readSection(DataInputStream dis, Readable<T> reader) throws IOException {
+        int size = Integer.parseInt(dis.readUTF());
+        List<T> result = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            result.add(reader.get());
+        }
+        return result;
+    }
+
+    private String dateFormat(LocalDate date) {
+        return date.format(DateTimeFormatter.ofPattern("yy/MM/dd"));
+    }
+
+    private class SectionIterator implements Iterator<List<String>> {
+        private final Map<SectionType, AbstractRecord> records;
+        Iterator<Map.Entry<SectionType, AbstractRecord>> mapIterator;
+
+        SectionIterator(Map<SectionType, AbstractRecord> records) {
+            this.records = records;
+            mapIterator = records.entrySet().iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return mapIterator.hasNext();
+        }
+
+        @Override
+        public List<String> next() {
+            List<String> result = new ArrayList<>();
+            Map.Entry<SectionType, AbstractRecord> record = mapIterator.next();
+            SectionType type = record.getKey();
+            switch (type) {
+                case PERSONAL:
+                case OBJECTIVES: {
+                    result.add(type.name());
+                    result.add(((SimpleTextRecord) records.get(type)).getSimpleText());
+                    break;
+                }
+                case ACHIEVEMENTS:
+                case QUALIFICATIONS: {
+                    result.add(type.name());
+                    List<String> bulletedRecords = (((BulletedListRecord) records.get(type))
+                            .getBulletedRecords());
+                    result.add(String.valueOf(bulletedRecords.size()));
+                    result.addAll(bulletedRecords);
+                    break;
+                }
+                case EXPERIENCE:
+                case EDUCATION: {
+                    result.add(type.name());
+                    List<Organization> organizations = ((OrganizationListRecord) records.get(type))
+                            .getOrganizations();
+                    result.add(String.valueOf(organizations.size()));
+                    for (Organization organization : organizations) {
+                        Link homePage = organization.getHomePage();
+                        result.add(homePage.getName());
+                        String url = homePage.getUrl();
+                        result.add(url != null ? url : "");
+                        List<Organization.Position> positions = organization.getPositions();
+                        result.add(String.valueOf(positions.size()));
+                        for (Organization.Position position : positions) {
+                            result.add(dateFormat(position.getDateStart()));
+                            result.add(dateFormat(position.getDateEnd()));
+                            result.add(position.getPosition());
+                            String jobDesc = position.getJobDesc();
+                            result.add(jobDesc != null ? jobDesc : "");
                         }
-                        result.setRecord(sectionType, new OrganizationListRecord(organizations));
                     }
                     break;
                 }
@@ -122,27 +175,4 @@ public class DataStreamSerializer implements Serializer {
             return result;
         }
     }
-
-    private String dateFormat(LocalDate date) {
-        return date.format(DateTimeFormatter.ofPattern("yy/MM/dd"));
-    }
-
-
-//*    Alternative way through reflection/in progress/just for history *//
-//    private void getMethods(@NotNull Class aClass, DataOutputStream dos, Object resume) throws IOException {
-//        List<Method> methods = Arrays.stream(aClass.getDeclaredMethods())
-//                .filter(x -> x.getName().startsWith("get")).filter(x -> x.isAnnotationPresent(DataStream.class))
-//                .collect(Collectors.toList());
-//        for (Method next : methods) {
-//            try {
-//                if (next.invoke(resume).getClass() == LocalDate.class) {
-//                    dos.writeUTF(((LocalDate) next.invoke(resume)).toString());
-//                } else {
-//                    dos.writeUTF(next.invoke(resume).toString());
-//                }
-//            } catch (IllegalAccessException | InvocationTargetException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 }

@@ -4,15 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.topjava.basejava.ResumeTestData;
 import ru.topjava.basejava.exception.NotExistsStorageException;
-import ru.topjava.basejava.model.Organization;
-import ru.topjava.basejava.model.OrganizationListRecord;
 import ru.topjava.basejava.model.Resume;
-import ru.topjava.basejava.model.SectionType;
 
 import java.io.File;
-import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -110,19 +105,5 @@ public abstract class AbstractStorageTest {
     @Test(expected = NotExistsStorageException.class)
     public void ifUpdateNotExistingResumeThenException() {
         storage.update(RESUME_4);
-    }
-
-    @Test()
-    public void ifUrlAndJobDescIsNullThenObjectsStoringIsOk() {
-        RESUME_4.setRecord(SectionType.EXPERIENCE, new OrganizationListRecord(Collections.singletonList((
-                new Organization("Java Online Projects",
-                        null,
-                        Arrays.asList(new Organization.Position(LocalDate.of(2013, 10, 1),
-                                LocalDate.now(),
-                                "Some job position",
-                                null))))
-        )));
-        storage.save(RESUME_4);
-        assertEquals(RESUME_4, storage.get(UUID_4));
     }
 }
