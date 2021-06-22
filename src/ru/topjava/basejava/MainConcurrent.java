@@ -1,4 +1,4 @@
-package ru.topjava.basejava.util;
+package ru.topjava.basejava;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,36 +8,10 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class MainConcurrent {
     private static final AtomicInteger COUNTER = new AtomicInteger(0);
-    private static final Integer SHARED_1 = 0;
-    private static final Integer SHARED_2 = 0;
 
     public static void main(String[] args) {
-        deadLockTest();
         //safeIncrement();
         //reentrantTest();
-    }
-
-    private static void deadLockTest() {
-        Thread deadLockThread1 = new Thread(() -> {
-            synchronized (SHARED_1) {
-                System.out.println(Thread.currentThread().getName() + " has captured shared1");
-                Thread.yield();
-                synchronized (SHARED_2) {
-                    System.out.println(Thread.currentThread().getName() + " has captured shared2");
-                }
-            }
-        });
-        Thread deadLockThread2 = new Thread(() -> {
-            synchronized (SHARED_2) {
-                System.out.println(Thread.currentThread().getName() + " has captured shared2");
-                Thread.yield();
-                synchronized (SHARED_1) {
-                    System.out.println(Thread.currentThread().getName() + " has captured shared1");
-                }
-            }
-        });
-        deadLockThread1.start();
-        deadLockThread2.start();
     }
 
     private static void reentrantTest() {
