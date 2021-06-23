@@ -14,17 +14,17 @@ public class Streams {
     }
 
     private static int minValue(int[] values) {
+        int identity = 0;
         return Arrays.stream(values)
                 .distinct()
                 .sorted()
-                .reduce((x, y) -> x * 10 + y)
-                .orElse(0);
+                .reduce(identity, (x, y) -> x * 10 + y);
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
+        int identity = 0;
         int sum = integers.stream()
-                .reduce(Integer::sum)
-                .orElse(0);
+                .reduce(identity, Integer::sum);
         return integers.stream()
                 .filter(x -> x % 2 != sum % 2)
                 .collect(Collectors.toList()); //Time complexity O(N+N)
