@@ -2,6 +2,7 @@ package ru.topjava.basejava.storage;
 
 import org.junit.Before;
 import org.junit.Test;
+import ru.topjava.basejava.Config;
 import ru.topjava.basejava.ResumeTestData;
 import ru.topjava.basejava.exception.NotExistsStorageException;
 import ru.topjava.basejava.model.Resume;
@@ -13,7 +14,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
-    protected final static File STORAGE_DIR = new File("C:\\Users\\user\\Documents\\basejava\\storage");
+    protected final static File STORAGE_DIR = Config.get().getStorageDir();
     protected IStorage storage;
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
