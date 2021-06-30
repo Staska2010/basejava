@@ -4,7 +4,9 @@ import ru.topjava.basejava.exception.ExistsStorageException;
 import ru.topjava.basejava.exception.NotExistsStorageException;
 import ru.topjava.basejava.exception.StorageException;
 import ru.topjava.basejava.model.Resume;
+import ru.topjava.basejava.sql.ConnectionFactory;
 
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,10 +19,17 @@ import static ru.topjava.basejava.storage.SqlHelper.UPDATE;
 
 public class SqlStorage implements IStorage {
     private static final Logger logger = Logger.getLogger(SqlStorage.class.getName());
+    ConnectionFactory connectionFactory;
     SqlHelper helper;
 
-    public SqlStorage() {
-        helper = new SqlHelper();
+    public SqlStorage(String dbDriver, String dbUrl, String dbUser, String dbPassword) {
+        try {
+            Class.forName(dbDriver);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        helper = new SqlHelper(connectionFactory);
     }
 
     @Override

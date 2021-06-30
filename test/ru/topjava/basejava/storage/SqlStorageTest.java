@@ -1,7 +1,9 @@
 package ru.topjava.basejava.storage;
 
-public class SqlStorageTest extends AbstractStorageTest{
+import ru.topjava.basejava.Config;
+
+public class SqlStorageTest extends AbstractStorageTest {
     public SqlStorageTest() {
-        super(new SqlStorage());
+        super(Config.get().getStorage());
     }
 }

@@ -1,16 +1,14 @@
 package ru.topjava.basejava.storage;
 
-import ru.topjava.basejava.Config;
 import ru.topjava.basejava.exception.StorageException;
 import ru.topjava.basejava.sql.ConnectionFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class SqlHelper {
-    String dbDriver;
-    String dbUrl;
-    String dbUser;
-    String dbPassword;
     private final ConnectionFactory factory;
     final static QueryHandler<ResultSet> SELECT = PreparedStatement::executeQuery;
     final static QueryHandler<Integer> UPDATE = PreparedStatement::executeUpdate;
@@ -19,21 +17,8 @@ public class SqlHelper {
         T handle(PreparedStatement pst) throws SQLException;
     }
 
-    protected SqlHelper() {
-        readConfig();
-        try {
-            Class.forName(dbDriver);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        factory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-    }
-
-    private void readConfig() {
-        dbDriver = Config.get().getDbDriver();
-        dbUrl = Config.get().getDbUrl();
-        dbUser = Config.get().getDbUser();
-        dbPassword = Config.get().getDbPassword();
+    protected SqlHelper(ConnectionFactory connectionFactory) {
+        factory = connectionFactory;
     }
 
     public <T> T executeStatement(String statement, QueryHandler<T> handler, String param1, String param2) {
