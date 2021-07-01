@@ -1,6 +1,5 @@
 package ru.topjava.basejava.storage;
 
-import ru.topjava.basejava.exception.ExistsStorageException;
 import ru.topjava.basejava.exception.NotExistsStorageException;
 import ru.topjava.basejava.model.Resume;
 
@@ -46,49 +45,48 @@ public class SqlStorage implements IStorage {
     @Override
     public void update(Resume r) {
         logger.info("Update resume: " + r);
-        int res = helper.executeStatement("UPDATE resume SET full_name=? WHERE uuid =?", ps -> {
+        helper.executeStatement("UPDATE resume SET full_name=? WHERE uuid =?", ps -> {
             ps.setString(1, r.getFullName());
             ps.setString(2, r.getUuid());
-            return ps.executeUpdate();
+            if (ps.executeUpdate() != 1) {
+                throw new NotExistsStorageException(r.getUuid());
+            }
+            return null;
         });
-        if (res != 1) {
-            throw new NotExistsStorageException(r.getUuid());
-        }
     }
 
     @Override
     public void save(Resume r) {
         logger.info("Save resume: " + r);
-        int res = helper.executeStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)", ps -> {
-            ps.setString(1, r.getUuid());
+        helper.executeStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)", ps -> {
+            String uuid = r.getUuid();
+            ps.setString(1, uuid);
             ps.setString(2, r.getFullName());
-            return ps.executeUpdate();
+            ps.executeUpdate();
+            return null;
         });
-        if (res != 1) {
-            throw new ExistsStorageException(r.getUuid());
-        }
     }
 
     @Override
     public void delete(String uuid) {
         logger.info("Delete resume by id: " + uuid);
-        int res = helper.executeStatement("DELETE FROM resume r WHERE r.uuid =?", ps -> {
+        helper.executeStatement("DELETE FROM resume r WHERE r.uuid =?", ps -> {
             ps.setString(1, uuid);
-            return ps.executeUpdate();
+            if (ps.executeUpdate() != 1) {
+                throw new NotExistsStorageException(uuid);
+            }
+            return null;
         });
-        if (res != 1) {
-            throw new NotExistsStorageException(uuid);
-        }
     }
 
     @Override
     public List<Resume> getAllSorted() {
         logger.info("Get all sorted");
-        return helper.executeStatement("SELECT * FROM resume ORDER BY uuid", ps -> {
+        return helper.executeStatement("SELECT * FROM resume ORDER BY full_name, uuid", ps -> {
             ResultSet rs = ps.executeQuery();
             List<Resume> result = new ArrayList<>();
             while (rs.next()) {
-                result.add(new Resume(rs.getString(1).trim(), rs.getString(2).trim()));
+                result.add(new Resume(rs.getString(1), rs.getString(2)));
             }
             return result;
         });

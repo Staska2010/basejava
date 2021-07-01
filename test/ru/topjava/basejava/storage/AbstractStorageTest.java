@@ -4,22 +4,24 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.topjava.basejava.Config;
 import ru.topjava.basejava.ResumeTestData;
+import ru.topjava.basejava.exception.ExistsStorageException;
 import ru.topjava.basejava.exception.NotExistsStorageException;
 import ru.topjava.basejava.model.Resume;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
     protected final static File STORAGE_DIR = Config.get().getStorageDir();
     protected IStorage storage;
-    private static final String UUID_1 = "uuid1";
-    private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
-    private static final String UUID_4 = "uuid4";
+    private static final String UUID_1 = UUID.randomUUID().toString();
+    private static final String UUID_2 = UUID.randomUUID().toString();
+    private static final String UUID_3 = UUID.randomUUID().toString();
+    private static final String UUID_4 = UUID.randomUUID().toString();
     private static final Resume RESUME_1;
     private static final Resume RESUME_2;
     private static final Resume RESUME_3;
@@ -65,7 +67,6 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    //TODO implement getting a sorted list
     public void ifGetAllSortedThenNumberAndInstancesAreCorrect() {
         List<Resume> actualResumes = storage.getAllSorted();
         assertEquals(3, actualResumes.size());
@@ -106,5 +107,10 @@ public abstract class AbstractStorageTest {
     @Test(expected = NotExistsStorageException.class)
     public void ifUpdateNotExistingResumeThenException() {
         storage.update(RESUME_4);
+    }
+
+    @Test(expected = ExistsStorageException.class)
+    public void ifSaveExistedRecordThenException() {
+        storage.save(RESUME_1);
     }
 }
