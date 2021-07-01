@@ -47,9 +47,10 @@ public class SqlStorage implements IStorage {
         logger.info("Update resume: " + r);
         helper.executeStatement("UPDATE resume SET full_name=? WHERE uuid =?", ps -> {
             ps.setString(1, r.getFullName());
-            ps.setString(2, r.getUuid());
+            String uuid = r.getUuid();
+            ps.setString(2, uuid);
             if (ps.executeUpdate() != 1) {
-                throw new NotExistsStorageException(r.getUuid());
+                throw new NotExistsStorageException(uuid);
             }
             return null;
         });
@@ -86,7 +87,7 @@ public class SqlStorage implements IStorage {
             ResultSet rs = ps.executeQuery();
             List<Resume> result = new ArrayList<>();
             while (rs.next()) {
-                result.add(new Resume(rs.getString(1), rs.getString(2)));
+                result.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
             }
             return result;
         });
