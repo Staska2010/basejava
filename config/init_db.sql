@@ -6,13 +6,12 @@ create table resume
     full_name text     not null
 );
 
-create table contact
+CREATE TABLE contact
 (
-    id          serial primary key,
-    type        text     not null,
-    resume_uuid char(36) not null references resume on delete cascade
+    id          SERIAL,
+    resume_uuid CHAR(36) NOT NULL REFERENCES resume (uuid) ON DELETE CASCADE,
+    type        TEXT     NOT NULL,
+    value       TEXT     NOT NULL
 );
-
-create index contact_uuid_type_index
-    on contact (resume_uuid, type);
-
+CREATE UNIQUE INDEX contact_uuid_type_index
+    ON contact (resume_uuid, type);

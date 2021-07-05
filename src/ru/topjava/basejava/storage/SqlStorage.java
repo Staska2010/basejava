@@ -1,13 +1,13 @@
 package ru.topjava.basejava.storage;
 
 import ru.topjava.basejava.exception.NotExistsStorageException;
+import ru.topjava.basejava.model.ContactType;
 import ru.topjava.basejava.model.Resume;
 
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class SqlStorage implements IStorage {
@@ -32,26 +32,45 @@ public class SqlStorage implements IStorage {
     @Override
     public Resume get(String uuid) {
         logger.info("Get resume by id: " + uuid);
-        return helper.executeStatement("SELECT * FROM resume r WHERE r.uuid =?", ps -> {
-            ps.setString(1, uuid);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                throw new NotExistsStorageException(uuid);
+        return helper.executeTransactionalStatement(conn -> {
+            try (PreparedStatement pst = conn.prepareStatement("SELECT * FROM resume r " +
+                    "  LEFT JOIN contact c ON r.uuid=c.resume_uuid" +
+                    "    WHERE r.uuid=?")) {
+                pst.setString(1, uuid);
+                ResultSet rs = pst.executeQuery();
+                if (!rs.next()) {
+                    throw new NotExistsStorageException(uuid);
+                }
+                Resume r = new Resume(uuid, rs.getString(2));
+                do {
+                    String value = rs.getString("value");
+                    ContactType type = ContactType.valueOf(rs.getString("type"));
+                    r.setContact(type, value);
+                } while (rs.next());
+                return r;
             }
-            return new Resume(uuid, rs.getString(2));
         });
     }
 
     @Override
     public void update(Resume r) {
         logger.info("Update resume: " + r);
-        helper.executeStatement("UPDATE resume SET full_name=? WHERE uuid =?", ps -> {
-            ps.setString(1, r.getFullName());
+        helper.executeTransactionalStatement(conn -> {
             String uuid = r.getUuid();
-            ps.setString(2, uuid);
-            if (ps.executeUpdate() != 1) {
-                throw new NotExistsStorageException(uuid);
+            try (PreparedStatement pst = conn.prepareStatement("UPDATE resume SET full_name=? WHERE uuid =?")) {
+                pst.setString(1, r.getFullName());
+                pst.setString(2, uuid);
+                if (pst.executeUpdate() != 1) {
+                    throw new NotExistsStorageException(uuid);
+                }
             }
+            try (PreparedStatement pst = conn.prepareStatement("DELETE  FROM contact WHERE resume_uuid=?")) {
+                pst.setString(1, uuid);
+                if (pst.executeUpdate() == 0) {
+                    throw new NotExistsStorageException(uuid);
+                }
+            }
+            insertContacts(r, conn);
             return null;
         });
     }
@@ -59,11 +78,13 @@ public class SqlStorage implements IStorage {
     @Override
     public void save(Resume r) {
         logger.info("Save resume: " + r);
-        helper.executeStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)", ps -> {
-            String uuid = r.getUuid();
-            ps.setString(1, uuid);
-            ps.setString(2, r.getFullName());
-            ps.executeUpdate();
+        helper.executeTransactionalStatement(conn -> {
+            try (PreparedStatement pst = conn.prepareStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)")) {
+                pst.setString(1, r.getUuid());
+                pst.setString(2, r.getFullName());
+                pst.execute();
+            }
+            insertContacts(r, conn);
             return null;
         });
     }
@@ -83,13 +104,18 @@ public class SqlStorage implements IStorage {
     @Override
     public List<Resume> getAllSorted() {
         logger.info("Get all sorted");
-        return helper.executeStatement("SELECT * FROM resume ORDER BY full_name, uuid", ps -> {
-            ResultSet rs = ps.executeQuery();
-            List<Resume> result = new ArrayList<>();
-            while (rs.next()) {
-                result.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
+        return helper.executeTransactionalStatement(conn -> {
+            try (PreparedStatement pst = conn.prepareStatement("SELECT * FROM resume ORDER BY full_name, uuid")) {
+                ResultSet resumesResultSet = pst.executeQuery();
+                List<Resume> result = new ArrayList<>();
+                while (resumesResultSet.next()) {
+                    Resume resume = new Resume(resumesResultSet.getString("uuid"),
+                            resumesResultSet.getString("full_name"));
+                    getContactsBySeparateQuery(conn, resume);
+                    result.add(resume);
+                }
+                return result;
             }
-            return result;
         });
     }
 
@@ -100,5 +126,28 @@ public class SqlStorage implements IStorage {
             rs.next();
             return rs.getInt(1);
         });
+    }
+
+    private void insertContacts(Resume r, Connection conn) throws SQLException {
+        try (PreparedStatement pst = conn.prepareStatement("INSERT INTO contact (resume_uuid, type, value) VALUES (?,?,?)")) {
+            for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
+                pst.setString(1, r.getUuid());
+                pst.setString(2, e.getKey().name());
+                pst.setString(3, e.getValue());
+                pst.addBatch();
+            }
+            pst.executeBatch();
+        }
+    }
+
+    private void getContactsBySeparateQuery(Connection conn, Resume resume) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM contact WHERE resume_uuid=?")) {
+            ps.setString(1, resume.getUuid());
+            ResultSet contactsSet = ps.executeQuery();
+            while (contactsSet.next()) {
+                resume.setContact(ContactType.valueOf(contactsSet.getString("type")),
+                        contactsSet.getString("value"));
+            }
+        }
     }
 }

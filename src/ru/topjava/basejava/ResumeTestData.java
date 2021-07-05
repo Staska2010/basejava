@@ -1,15 +1,16 @@
 package ru.topjava.basejava;
 
+import ru.topjava.basejava.model.ContactType;
 import ru.topjava.basejava.model.Resume;
 
 public class ResumeTestData {
     public static Resume fillResume(String uuid, String fullName) {
         Resume testResume = new Resume(uuid, fullName);
-//        testResume.setContact(ContactType.EMAIL, "gkislin@yandex.ru");
-//        testResume.setContact(ContactType.GITHUB, "https://github.com/gkislin");
-//        testResume.setContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
-//        testResume.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
-//        testResume.setContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
+        testResume.setContact(ContactType.EMAIL, "gkislin@yandex.ru");
+        testResume.setContact(ContactType.GITHUB, "https://github.com/gkislin");
+        testResume.setContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
+        testResume.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
+        testResume.setContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
 //        testResume.setRecord(SectionType.OBJECTIVES,
 //                new SimpleTextRecord("Ведущий стажировок и корпоративного обучения по " +
 //                        "Java Web и Enterprise технологиям"));
