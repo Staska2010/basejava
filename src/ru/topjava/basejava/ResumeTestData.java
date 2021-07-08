@@ -1,7 +1,8 @@
 package ru.topjava.basejava;
 
-import ru.topjava.basejava.model.ContactType;
-import ru.topjava.basejava.model.Resume;
+import ru.topjava.basejava.model.*;
+
+import java.util.Arrays;
 
 public class ResumeTestData {
     public static Resume fillResume(String uuid, String fullName) {
@@ -11,27 +12,27 @@ public class ResumeTestData {
         testResume.setContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
         testResume.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
         testResume.setContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
-//        testResume.setRecord(SectionType.OBJECTIVES,
-//                new SimpleTextRecord("Ведущий стажировок и корпоративного обучения по " +
-//                        "Java Web и Enterprise технологиям"));
-//        testResume.setRecord(SectionType.PERSONAL,
-//                new SimpleTextRecord("Аналитический склад ума, сильная логика, креативность, " +
-//                        "инициативность. Пурист кода и архитектуры."));
-//        testResume.setRecord(SectionType.ACHIEVEMENTS, new BulletedListRecord(Arrays.asList(
-//                "С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\"",
-//                "Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike",
-//                "Налаживание процесса разработки и непрерывной интеграции ERP системы River BPM. ",
-//                "Реализация c нуля Rich Internet Application приложения на стеке технологий JPA, Spring, Spring-MVC," +
-//                        " GWT, ExtGWT (GXT), Commet, HTML5, Highstock для алгоритмического трейдинга.",
-//                "Создание JavaEE фреймворка для отказоустойчивого взаимодействия слабо-связанных сервисов"
-//        )));
-//        testResume.setRecord(SectionType.QUALIFICATIONS, new BulletedListRecord(Arrays.asList(
-//                "JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2",
-//                "Version control: Subversion, Git, Mercury, ClearCase, Perforce",
-//                "DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle",
-//                "MySQL, SQLite, MS SQL, HSQLDB",
-//                "Languages: Java, Scala, Python/Jython/PL-Python, JavaScript, Groovy"
-//        )));
+        testResume.setRecord(SectionType.OBJECTIVES,
+                new SimpleTextRecord("Ведущий стажировок и корпоративного обучения по " +
+                        "Java Web и Enterprise технологиям"));
+        testResume.setRecord(SectionType.PERSONAL,
+                new SimpleTextRecord("Аналитический склад ума, сильная логика, креативность, " +
+                        "инициативность. Пурист кода и архитектуры."));
+        testResume.setRecord(SectionType.ACHIEVEMENTS, new BulletedListRecord(Arrays.asList(
+                "С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\"",
+                "Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike",
+                "Налаживание процесса разработки и непрерывной интеграции ERP системы River BPM. ",
+                "Реализация c нуля Rich Internet Application приложения на стеке технологий JPA, Spring, Spring-MVC," +
+                        " GWT, ExtGWT (GXT), Commet, HTML5, Highstock для алгоритмического трейдинга.",
+                "Создание JavaEE фреймворка для отказоустойчивого взаимодействия слабо-связанных сервисов"
+        )));
+        testResume.setRecord(SectionType.QUALIFICATIONS, new BulletedListRecord(Arrays.asList(
+                "JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2",
+                "Version control: Subversion, Git, Mercury, ClearCase, Perforce",
+                "DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle",
+                "MySQL, SQLite, MS SQL, HSQLDB",
+                "Languages: Java, Scala, Python/Jython/PL-Python, JavaScript, Groovy"
+        )));
 //        testResume.setRecord(SectionType.EXPERIENCE, new OrganizationListRecord(Arrays.asList((
 //                        new Organization("Java Online Projects",
 //                                "javaops.ru",
