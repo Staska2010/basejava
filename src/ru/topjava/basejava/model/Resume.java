@@ -47,12 +47,24 @@ public class Resume implements Comparable<Resume>, Serializable {
         return contacts;
     }
 
-    public void setContact(ContactType type, String field) {
-        contacts.put(type, field);
+    public String getContact(ContactType type) {
+        return contacts.get(type);
     }
 
     public Map<SectionType, AbstractRecord> getRecords() {
         return records;
+    }
+
+    public AbstractRecord getRecord(SectionType type) {
+        return records.get(type);
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setContact(ContactType type, String field) {
+        contacts.put(type, field);
     }
 
     public void setRecord(SectionType type, AbstractRecord abstractRecord) {

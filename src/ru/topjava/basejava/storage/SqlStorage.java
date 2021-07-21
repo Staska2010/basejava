@@ -2,6 +2,7 @@ package ru.topjava.basejava.storage;
 
 import ru.topjava.basejava.exception.NotExistsStorageException;
 import ru.topjava.basejava.model.*;
+import ru.topjava.basejava.util.JsonParser;
 
 import java.sql.*;
 import java.util.*;
@@ -159,7 +160,7 @@ public class SqlStorage implements IStorage {
         String value = rs.getString("value");
         SectionType type = SectionType.valueOf(rs.getString("type"));
         if (value != null) {
-            r.setRecord(type, convertStringToSectionData(type, value));
+           r.setRecord(type, JsonParser.read(value, AbstractRecord.class));
         }
     }
 
@@ -181,7 +182,7 @@ public class SqlStorage implements IStorage {
                 SectionType type = e.getKey();
                 pst.setString(1, r.getUuid());
                 pst.setString(2, type.name());
-                pst.setString(3, convertSectionDataToString(type, r));
+                pst.setString(3, JsonParser.write(e.getValue(), AbstractRecord.class));
                 pst.addBatch();
             }
             pst.executeBatch();
@@ -208,7 +209,7 @@ public class SqlStorage implements IStorage {
                 return ((SimpleTextRecord) r.getRecords().get(type)).getSimpleText();
             case ACHIEVEMENTS:
             case QUALIFICATIONS: {
-                List<String> records = ((BulletedListRecord)r.getRecords().get(type)).getBulletedRecords();
+                List<String> records = ((BulletedListRecord) r.getRecords().get(type)).getBulletedRecords();
                 return String.join("\n", records);
             }
         }

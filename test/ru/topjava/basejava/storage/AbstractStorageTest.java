@@ -28,10 +28,10 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_4;
 
     static {
-        RESUME_1 = new Resume(UUID_1, "1");
-        RESUME_2 = ResumeTestData.fillResume(UUID_2, "2");
-        RESUME_3 = ResumeTestData.fillResume(UUID_3, "3");
-        RESUME_4 = ResumeTestData.fillResume(UUID_4, "4");
+        RESUME_1 = new Resume(UUID_1, "Antony Checkoff");
+        RESUME_2 = ResumeTestData.fillResume(UUID_2, "Barbara Koromyslova");
+        RESUME_3 = ResumeTestData.fillResume(UUID_3, "Romashka Begemotovna");
+        RESUME_4 = ResumeTestData.fillResume(UUID_4, "Sharikov Poligraf");
     }
 
     AbstractStorageTest(IStorage storage) {
@@ -70,7 +70,7 @@ public abstract class AbstractStorageTest {
     public void ifGetAllSortedThenNumberAndInstancesAreCorrect() {
         List<Resume> actualResumes = storage.getAllSorted();
         assertEquals(3, actualResumes.size());
-        assertEquals(Arrays.asList(RESUME_1, RESUME_2, RESUME_3), actualResumes);
+        assertEquals(Arrays.asList(RESUME_3, RESUME_1, RESUME_2), actualResumes);
     }
 
     //@Test

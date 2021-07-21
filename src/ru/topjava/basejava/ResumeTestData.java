@@ -2,6 +2,7 @@ package ru.topjava.basejava;
 
 import ru.topjava.basejava.model.*;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 public class ResumeTestData {
@@ -33,24 +34,42 @@ public class ResumeTestData {
                 "MySQL, SQLite, MS SQL, HSQLDB",
                 "Languages: Java, Scala, Python/Jython/PL-Python, JavaScript, Groovy"
         )));
-//        testResume.setRecord(SectionType.EXPERIENCE, new OrganizationListRecord(Arrays.asList((
-//                        new Organization("Java Online Projects",
-//                                "javaops.ru",
-//                                Arrays.asList(new Organization.Position(LocalDate.of(2013, 10, 1),
-//                                        LocalDate.now(),
-//                                        "Автор проекта",
-//                                        "Создание, организация и проведение Java онлайн проектов и стажировок")))),
-//                new Organization("Wrike", "www.wrike.com",
-//                        Arrays.asList(new Organization.Position(LocalDate.of(2014, 10, 1),
-//                                LocalDate.of(2016, 01, 01),
-//                                "Старший разработчик (backend)",
-//                                "Проектирование и разработка онлайн платформы управления проектами Wrike " +
-//                                        "(Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis)."))),
-//                new Organization("Some Company", null,
-//                        Arrays.asList(new Organization.Position(LocalDate.of(2014, 10, 1),
-//                                LocalDate.of(2016, 01, 01),
-//                                "Старший разработчик (backend)", null)))
-//        )));
+        testResume.setRecord(SectionType.EXPERIENCE, new OrganizationListRecord(Arrays.asList((
+                        new Organization("Java Online Projects",
+                                "javaops.ru",
+                                Arrays.asList(new Organization.Position(LocalDate.of(2013, 10, 1),
+                                        LocalDate.now(),
+                                        "Автор проекта",
+                                        "Создание, организация и проведение Java онлайн проектов и стажировок")))),
+                new Organization("Wrike", "www.wrike.com",
+                        Arrays.asList(new Organization.Position(LocalDate.of(2014, 10, 1),
+                                LocalDate.of(2016, 01, 01),
+                                "Старший разработчик (backend)",
+                                "Проектирование и разработка онлайн платформы управления проектами Wrike " +
+                                        "(Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis)."))),
+                new Organization("Some Company", null,
+                        Arrays.asList(new Organization.Position(LocalDate.of(2014, 10, 1),
+                                LocalDate.of(2016, 01, 01),
+                                "Старший разработчик (backend)", null)))
+        )));
+        testResume.setRecord(SectionType.EDUCATION, new OrganizationListRecord(Arrays.asList((
+                        new Organization("Java Online University",
+                                "javaops.ru",
+                                Arrays.asList(new Organization.Position(LocalDate.of(2010, 10, 1),
+                                        LocalDate.now(),
+                                        "Геологоразведка",
+                                        "Описание направления")))),
+                new Organization("Wrike", "www.wrike.com",
+                        Arrays.asList(new Organization.Position(LocalDate.of(2014, 10, 1),
+                                LocalDate.of(2016, 01, 01),
+                                "Старший разработчик (backend)",
+                                "Проектирование и разработка онлайн платформы управления проектами Wrike " +
+                                        "(Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis)."))),
+                new Organization("Some Company", null,
+                        Arrays.asList(new Organization.Position(LocalDate.of(2014, 10, 1),
+                                LocalDate.of(2016, 01, 01),
+                                "Старший разработчик (backend)", null)))
+        )));
         return testResume;
     }
 
