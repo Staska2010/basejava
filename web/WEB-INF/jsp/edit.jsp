@@ -42,7 +42,7 @@
                               rows=5><%=String.join("\n", ((BulletedListRecord) record).getBulletedRecords())%></textarea>
                 </c:when>
                 <c:when test="${type=='EXPERIENCE' || type=='EDUCATION'}">
-                    <c:forEach var="org" items="<%=((OrganizationListRecord)record).getOrganizations()%>">
+                    <c:forEach var="org" items="<%=((OrganizationListRecord)record).getOrganizations()%>" varStatus="orgIndex">
                         <dl>
                             <dt>${type=='EXPERIENCE' ? "Компания:" : "Образовательное учреждение:"}</dt>
                             <dd><input type="text" name='${type}' size=80 value="${org.homePage.name}"></dd>
@@ -52,32 +52,32 @@
                             <dd><input type="text" name='${type}url' size=80 value="${org.homePage.url}"></dd>
                             </dd>
                         </dl>
-                        <c:forEach var="position" items="${org.positions}" varStatus="nextPosition">
+                        <c:forEach var="position" items="${org.positions}">
                             <jsp:useBean id="position" type="ru.topjava.basejava.model.Organization.Position"/>
                             <c:set var="startDate" value="${position.dateStart}"/>
                             <c:set var="endDate" value="${position.dateEnd}"/>
                             <dl>
                                 <dt>С:</dt>
                                 <dd>
-                                    <input type="month" name="${type}startDate${nextPosition.index}" size=10
+                                    <input type="month" name="${type}startDate${orgIndex.index}" size=10
                                            value="${f:formatLocalDate(startDate, 'yyyy-MM')}" placeholder="MM/yy">
                                 </dd>
                             </dl>
                             <dl>
                                 <dt>По:</dt>
                                 <dd>
-                                    <input type="month" name="${type}endDate${nextPosition.index}" size=10
+                                    <input type="month" name="${type}endDate${orgIndex.index}" size=10
                                            value="${f:formatLocalDate(endDate, 'yyyy-MM')}"
                                            placeholder="MM/yy">
                             </dl>
                             <dl>
                                 <dt>${type=='EXPERIENCE' ? "Должность:" : "Направление:"}</dt>
-                                <dd><input type="text" name='${type}title${nextPosition.index}' size=80
+                                <dd><input type="text" name='${type}title${orgIndex.index}' size=80
                                            value="${position.position}">
                             </dl>
                             <dl>
                                 <dt>${type=='EXPERIENCE' ? "Обязанности:" : "Дополнительно:"}</dt>
-                                <dd><textarea name="${type}description${nextPosition.index}" rows=5
+                                <dd><textarea name="${type}description${orgIndex.index}" rows=5
                                               cols=75>${position.jobDesc}</textarea></dd>
                             </dl>
                         </c:forEach>
@@ -87,7 +87,7 @@
         </c:forEach>
         <hr>
         <button type="submit">Сохранить</button>
-        <button onclick="window.history.back()">Отменить</button>
+        <button type="button" onclick="window.history.back()">Отменить</button>
     </form>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
