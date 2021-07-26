@@ -44,7 +44,7 @@
                 <c:when test="${type=='EXPERIENCE' || type=='EDUCATION'}">
                     <c:forEach var="org" items="<%=((OrganizationListRecord)record).getOrganizations()%>" varStatus="orgIndex">
                         <dl>
-                            <dt>${type=='EXPERIENCE' ? "Компания:" : "Образовательное учреждение:"}</dt>
+                            <dt><b>${type=='EXPERIENCE' ? "Компания:" : "Образовательное учреждение:"}</b></dt>
                             <dd><input type="text" name='${type}' size=80 value="${org.homePage.name}"></dd>
                         </dl>
                         <dl>
@@ -56,6 +56,11 @@
                             <jsp:useBean id="position" type="ru.topjava.basejava.model.Organization.Position"/>
                             <c:set var="startDate" value="${position.dateStart}"/>
                             <c:set var="endDate" value="${position.dateEnd}"/>
+                            <dl>
+                                <dt><b>${type=='EXPERIENCE' ? "Должность:" : "Направление:"}</b></dt>
+                                <dd><input type="text" name='${type}title${orgIndex.index}' size=80
+                                           value="${position.position}">
+                            </dl>
                             <dl>
                                 <dt>С:</dt>
                                 <dd>
@@ -71,16 +76,12 @@
                                            placeholder="MM/yy">
                             </dl>
                             <dl>
-                                <dt>${type=='EXPERIENCE' ? "Должность:" : "Направление:"}</dt>
-                                <dd><input type="text" name='${type}title${orgIndex.index}' size=80
-                                           value="${position.position}">
-                            </dl>
-                            <dl>
                                 <dt>${type=='EXPERIENCE' ? "Обязанности:" : "Дополнительно:"}</dt>
                                 <dd><textarea name="${type}description${orgIndex.index}" rows=5
                                               cols=75>${position.jobDesc}</textarea></dd>
                             </dl>
                         </c:forEach>
+                        <hr/>
                     </c:forEach>
                 </c:when>
             </c:choose>

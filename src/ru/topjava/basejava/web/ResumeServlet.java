@@ -37,7 +37,7 @@ public class ResumeServlet extends HttpServlet {
         switch (action) {
             case "new":
                 r = new Resume();
-                fillEmptySections(r);
+                addDummySections(r);
                 break;
             case "delete":
                 storage.delete(uuid);
@@ -48,7 +48,7 @@ public class ResumeServlet extends HttpServlet {
                 break;
             case "edit":
                 r = storage.get(uuid);
-                fillEmptySections(r);
+                addDummySections(r);
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
@@ -137,7 +137,7 @@ public class ResumeServlet extends HttpServlet {
         response.sendRedirect("resume");
     }
 
-    private void fillEmptySections(Resume resume) {
+    private void addDummySections(Resume resume) {
         for (SectionType next : SectionType.values()) {
             AbstractRecord record = resume.getRecord(next);
             switch (next) {
@@ -159,6 +159,9 @@ public class ResumeServlet extends HttpServlet {
                         record = new OrganizationListRecord(Collections.singletonList(getDummyOrg()));
                     } else {
                         OrganizationListRecord currentOrgs = (OrganizationListRecord) resume.getRecord(next);
+                        for(Organization nextOrg : currentOrgs.getOrganizations()) {
+                            nextOrg.getPositions().add(getDummyPosition());
+                        }
                         currentOrgs.getOrganizations().add(getDummyOrg());
                     }
                     break;
@@ -167,11 +170,13 @@ public class ResumeServlet extends HttpServlet {
         }
     }
 
+    private Organization.Position getDummyPosition() {
+        return new Organization.Position(LocalDate.MIN, LocalDate.MAX, "", "");
+    }
+
     private Organization getDummyOrg() {
         Organization.Position dummyPosition = new Organization.Position(
                 LocalDate.MIN, LocalDate.MAX, "", "");
         return new Organization("", "", Collections.singletonList(dummyPosition));
     }
-
-    ;
 }
