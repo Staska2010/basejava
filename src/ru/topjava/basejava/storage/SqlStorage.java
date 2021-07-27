@@ -15,9 +15,9 @@ public class SqlStorage implements IStorage {
 
     public SqlStorage(String dbDriver, String dbUrl, String dbUser, String dbPassword) {
         try {
-            Class.forName(dbDriver);
+            Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Error while loading DB driver", e);
+            throw new IllegalStateException("DB driver was not found");
         }
         helper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
     }
@@ -160,7 +160,7 @@ public class SqlStorage implements IStorage {
         String value = rs.getString("value");
         SectionType type = SectionType.valueOf(rs.getString("type"));
         if (value != null) {
-           r.setRecord(type, JsonParser.read(value, AbstractRecord.class));
+            r.setRecord(type, JsonParser.read(value, AbstractRecord.class));
         }
     }
 
